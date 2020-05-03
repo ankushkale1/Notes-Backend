@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.Generated;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,6 +16,8 @@ import javax.validation.constraints.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Note
@@ -40,8 +43,9 @@ public class Note
 	@ElementCollection(targetClass=String.class)
 	Set<String> keywords;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY,optional=false)
     @JoinColumn(name="notebook_id", nullable=false)
+	@JsonBackReference
 	Notebook notebook;
 	
 	public Note()

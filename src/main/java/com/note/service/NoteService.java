@@ -19,19 +19,49 @@ public class NoteService
 	@Autowired
 	NotebookRepository notebook_repo;
 	
-	public List<Notebook> listNoteBooks()
+	/*public List<Notebook> listNoteBooks()
 	{
 		List<Notebook> res = Collections.EMPTY_LIST;
 		res = notebook_repo.findAll();
 		return res;
-	}
+	}*/
 	
-	public Set<Note> getNotesInNotebook(String notebook)
+	public List<Notebook> listNoteBooksOnly()
 	{
-		Set<Note> res = Collections.EMPTY_SET;
-		res = notebook_repo.findByNotebookname(notebook).getNotes();
+		List<Notebook> res = Collections.EMPTY_LIST;
+		res = notebook_repo.getNotebooksOnly();
 		return res;
 	}
+	
+	//meta
+	public Set<Note> getNotesInNotebook(Integer notebook)
+	{
+		Set<Note> notes = notebook_repo.findById(notebook).get().getNotes();
+		
+		for(Note note : notes)
+		{
+			note.setJsonnotes("");
+		}
+		
+		return notes;
+	}
+	
+	public Note getNoteDetails(Integer note_id)
+	{
+		Optional<Note> note = note_repo.findById(note_id);
+		if(note.isPresent())
+			return note.get();
+		else
+			return new Note();
+	}
+	
+	/*public Set<Note> getNotesInNotebook(String notebook)
+	{
+		Set<Note> res = Collections.EMPTY_SET;
+		Notebook book = notebook_repo.findByNotebookname(notebook);
+		res = book.getNotes();
+		return res;
+	}*/
 	
 	public Note addUpdateNote(Note note)
 	{

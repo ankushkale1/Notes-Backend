@@ -6,6 +6,8 @@ import javax.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -26,7 +28,8 @@ public class Notebook
 	LocalDateTime udate;
 	
 	@OneToMany(mappedBy="notebook",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	Set<Note> notes = new HashSet<>();
+	@JsonManagedReference
+	Set<Note> notes;
 	
 	public Notebook()
 	{

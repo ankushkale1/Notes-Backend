@@ -10,7 +10,8 @@ import java.util.*;
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Integer>
 {
-	@Query(value="from Note where jsonnotes like '%?0%'")
+	@Query(value="select * from Note inner join Notebook on Note.notebook_id=Notebook.notebook_id "
+			+ "where jsonnotes like '%?1%'",nativeQuery=true)
 	public List<Note> findByContentMatch(String textToSearch);
 	
 	public List<Note> findByKeywords(String keyword);

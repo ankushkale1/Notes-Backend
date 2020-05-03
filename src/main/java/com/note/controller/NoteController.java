@@ -20,16 +20,22 @@ public class NoteController
 	public List<Notebook> listNoteBooks()
 	{
 		List<Notebook> res = Collections.EMPTY_LIST;
-		res = service.listNoteBooks();
+		res = service.listNoteBooksOnly();
 		return res;
 	}
 	
-	@GetMapping("getNotes/{notebook}")
-	public Set<Note> getNotesInNotebook(@PathVariable("notebook") String notebook)
+	@GetMapping("getNotesMeta/{notebook}")
+	public Set<Note> getNotesInNotebook(@PathVariable("notebook") Integer notebook)
 	{
 		Set<Note> res = Collections.EMPTY_SET;
 		res = service.getNotesInNotebook(notebook);
 		return res;
+	}
+	
+	@GetMapping("getNote/{noteid}")
+	public Note getNote(@PathVariable("noteid") Integer noteid)
+	{
+		return service.getNoteDetails(noteid);
 	}
 	
 	@PostMapping("addNote")
