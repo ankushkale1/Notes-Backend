@@ -24,14 +24,6 @@ public class NoteController
 		return res;
 	}
 	
-	@GetMapping("getNotesMeta/{notebook}")
-	public Set<Note> getNotesInNotebook(@PathVariable("notebook") Integer notebook)
-	{
-		Set<Note> res = Collections.EMPTY_SET;
-		res = service.getNotesInNotebook(notebook);
-		return res;
-	}
-	
 	@GetMapping("getNote/{noteid}")
 	public Note getNote(@PathVariable("noteid") Integer noteid)
 	{

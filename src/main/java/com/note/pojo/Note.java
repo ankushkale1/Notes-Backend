@@ -1,36 +1,36 @@
 package com.note.pojo;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Generated;
-import javax.persistence.ElementCollection;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.*;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
+import org.hibernate.search.annotations.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
+@Indexed
 public class Note
 {
 	@Id
 	@GeneratedValue
+	//@Field(termVector = TermVector.YES)
 	Integer note_id;
 	
 	@NotBlank
+	@Field
 	String notename;
 	
 	@NotBlank
 	@Lob
+	@Field
 	String jsonnotes;
 	
 	@CreationTimestamp
@@ -40,17 +40,33 @@ public class Note
 	LocalDateTime udate;
 	
 	@NotEmpty
-	@ElementCollection(targetClass=String.class)
+	@ElementCollection
 	Set<String> keywords;
 	
-	@ManyToOne(fetch=FetchType.LAZY,optional=false)
+	@ManyToOne(optional=false)
     @JoinColumn(name="notebook_id", nullable=false)
 	@JsonBackReference
 	Notebook notebook;
 	
+	@Transient
+	//as above thing skips notebook object
+	@JsonSerialize
+	@JsonDeserialize
+	Integer notebook_id;
+	
 	public Note()
 	{
 		
+	}
+
+	public Integer getNotebook_id()
+	{
+		return notebook_id;
+	}
+
+	public void setNotebook_id(Integer notebook_id)
+	{
+		this.notebook_id = notebook_id;
 	}
 
 	public Notebook getNotebook()
