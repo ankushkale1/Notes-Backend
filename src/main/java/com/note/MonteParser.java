@@ -2,10 +2,15 @@ package com.note;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.jsoup.*;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,10 +20,10 @@ import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import com.note.service.NoteService;
 
-@Component
+//@Component
 public class MonteParser implements CommandLineRunner
 {
-	private final String baseNotesPath = "/home/ankush/Documents/monte";
+	private final String baseNotesPath = "/home/ankush/Documents/MonteNote Notebooks";
 	
 	@Autowired
 	NoteService note_service;
@@ -59,19 +64,37 @@ public class MonteParser implements CommandLineRunner
 											.replace("{ext}", FilenameUtils.getExtension(image.getName()))
 											.replace("{b64}", Base64Utils.encodeToString(FileUtils.readFileToByteArray(image)));
 							
+							//System.out.println("Path: "+image.getAbsolutePath()+" "+b64_img.length());
+							template = template.replace(image.getAbsolutePath(),b64_img);
 							
-							template = template.replace("<img src=\""+image.getAbsolutePath()+"\"", "<img src=\""+b64_img+"\"");
-							
-							if(template.contains("<img src=\""+image.getAbsolutePath()+"\""))
-								System.out.println("Not gone..");
+							//if(template.contains(image.getAbsolutePath()))
+							//	System.out.println("Not gone..");
 						}
+						
+						/*Document doc = Jsoup.parse(FileUtils.readFileToString(indexFile));
+						Elements imgs = doc.getElementsByTag("img");
+						
+						for(Element img : imgs)
+						{
+							try
+							{
+								String src = img.attr("src");
+								
+								String b64_img = base64
+										.replace("{ext}", FilenameUtils.getExtension(src))
+										.replace("{b64}", Base64Utils.encodeToString(FileUtils.readFileToByteArray(new File(src))));
+								
+								img.attr("src", b64_img);
+							}
+							catch(Exception e) {}
+						}*/
+						
 						
 						Set<String> keywords = new HashSet<>();
 						keywords.addAll(FileUtils.readLines(tags));
 						
 						if(keywords.size() == 0)
 							keywords.add("key");
-						
 						
 						note.setJsonnotes(template);
 						note.setNotebook(book);

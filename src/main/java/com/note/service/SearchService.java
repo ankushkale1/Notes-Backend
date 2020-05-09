@@ -11,6 +11,9 @@ import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaContext;
@@ -64,6 +67,7 @@ public class SearchService
 		try
 		{
 			notes = jpaQuery.getResultList();
+			removeTags(notes);
 		}
 		catch (NoResultException nre)
 		{
@@ -71,5 +75,28 @@ public class SearchService
 		}
 
 		return notes;
+	}
+	
+	public void removeTags(List<Note> notes)
+	{
+		List<String> tagsToRemove = Arrays.asList(new String[] {"img"});
+		
+		for(Note note : notes)
+		{
+			String content = note.getJsonnotes();
+			
+			if(content != null) {
+			    Document document = Jsoup.parse(content);
+			    
+			    for(String tag : tagsToRemove)
+			    	document.select(tag).remove();
+			    
+			    content = document.text();
+			    
+			    //content = document.toString();
+			}
+			
+			note.setJsonnotes(content);
+		}
 	}
 }
