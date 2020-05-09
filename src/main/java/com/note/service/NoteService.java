@@ -2,10 +2,13 @@ package com.note.service;
 
 import java.util.*;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.*;
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
@@ -84,6 +87,12 @@ public class NoteService
 	{
 		List<Note> res = Collections.EMPTY_LIST;
 		res = search.fuzzySearch(txt);
+		keepOnlyMatched(res,txt);
 		return res;
+	}
+	
+	public void keepOnlyMatched(List<Note> notes,String txt)
+	{
+		
 	}
 }

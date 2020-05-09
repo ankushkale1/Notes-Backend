@@ -56,7 +56,7 @@ public class SearchService
 		Query luceneQuery = qb.keyword()
 				.fuzzy()
 				.withEditDistanceUpTo(1)
-				.withPrefixLength(1).onFields("jsonnotes")
+				.withPrefixLength(1).onFields("plain_content")
 				.matching(searchTerm).createQuery();
 
 		javax.persistence.Query jpaQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, Note.class);
@@ -67,7 +67,7 @@ public class SearchService
 		try
 		{
 			notes = jpaQuery.getResultList();
-			removeTags(notes);
+			//removeTags(notes);
 		}
 		catch (NoResultException nre)
 		{
@@ -77,7 +77,7 @@ public class SearchService
 		return notes;
 	}
 	
-	public void removeTags(List<Note> notes)
+	/*public void removeTags(List<Note> notes)
 	{
 		List<String> tagsToRemove = Arrays.asList(new String[] {"img"});
 		
@@ -98,5 +98,5 @@ public class SearchService
 			
 			note.setJsonnotes(content);
 		}
-	}
+	}*/
 }

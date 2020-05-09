@@ -1,0 +1,13 @@
+Git
+
+As there is 2FA enabled to we need to generate new Access token which will be used
+as password to connect local git repo to github
+
+Init GIT with app:
+
+git remote add origin https://github.com/ankushkale1/MyNotes.git
+
+git pull --rebase https://github.com/ankushkale1/MyNotes.git  master
+
+git push origin
+

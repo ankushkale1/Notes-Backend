@@ -30,7 +30,6 @@ public class Note
 	
 	@NotBlank
 	@Lob
-	@Field
 	String jsonnotes;
 	
 	@CreationTimestamp
@@ -54,9 +53,24 @@ public class Note
 	@JsonDeserialize
 	Integer notebook_id;
 	
+	@NotEmpty
+	@Lob
+	@Field
+	String plain_content;
+	
 	public Note()
 	{
 		
+	}
+
+	public String getPlain_content()
+	{
+		return plain_content;
+	}
+
+	public void setPlain_content(String plain_content)
+	{
+		this.plain_content = plain_content;
 	}
 
 	public Integer getNotebook_id()
