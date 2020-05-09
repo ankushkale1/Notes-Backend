@@ -21,6 +21,7 @@ public class Notebook
 	@NotBlank
 	String notebookname;
 	
+	@Column(updatable = false)
 	@CreationTimestamp
 	LocalDateTime cdate;
 	

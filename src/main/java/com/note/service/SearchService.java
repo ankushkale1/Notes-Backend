@@ -21,6 +21,9 @@ import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.note.pojo.*;
 
 @Service
@@ -47,7 +50,7 @@ public class SearchService
 		}
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Note> fuzzySearch(String searchTerm)
 	{
 
@@ -68,6 +71,7 @@ public class SearchService
 		{
 			notes = jpaQuery.getResultList();
 			//removeTags(notes);
+			notes = removeNonMatchedLines(notes,searchTerm);
 		}
 		catch (NoResultException nre)
 		{
@@ -75,6 +79,37 @@ public class SearchService
 		}
 
 		return notes;
+	}
+	
+  private List<Note> removeNonMatchedLines(List<Note> notes,String searchTerm)
+	{
+		List<Note> newnotes = new ArrayList<>();
+		
+		for(Note note : notes)
+		{
+			String lines[] = note.getPlain_content().split("\n");
+			//if(lines.length == 1)
+			//	lines = note.getPlain_content().split("\r\n");
+			
+			//System.out.println("Lines: "+lines.length);
+			
+			String newline = Stream.of(lines)
+			//.filter(line -> line.contains(searchTerm))
+			.map(line -> line.replaceAll(searchTerm, "<mark>"+searchTerm+"</mark>"))
+			.collect(Collectors.joining("\n"));
+			
+			//System.out.println("Lines: "+newline.split("\n").length);
+			
+			Note newnote = new Note();
+			newnote.setNote_id(note.getNote_id());
+			newnote.setPlain_content(newline);
+			newnote.setNotebook_id(note.getNotebook_id());
+			newnote.setNotename(note.getNotename());
+			
+			newnotes.add(newnote);
+		}
+		
+		return newnotes;
 	}
 	
 	/*public void removeTags(List<Note> notes)

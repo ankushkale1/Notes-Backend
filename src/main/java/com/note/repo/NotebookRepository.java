@@ -11,6 +11,6 @@ public interface NotebookRepository extends JpaRepository<Notebook, Integer>
 {
 	public Notebook findByNotebookname(String name);
 	
-	@Query(value="select * from Notebook",nativeQuery=true)
+	@Query(value="select * from notebook",nativeQuery=true)
 	public List<Notebook> getNotebooksOnly();
 }

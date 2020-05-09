@@ -15,12 +15,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import lombok.Builder;
+
 @Entity
 @Indexed
+//@Builder(toBuilder=true)
 public class Note
 {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	//@Field(termVector = TermVector.YES)
 	Integer note_id;
 	
@@ -32,6 +35,7 @@ public class Note
 	@Lob
 	String jsonnotes;
 	
+	@Column(updatable = false)
 	@CreationTimestamp
 	LocalDateTime cdate;
 	
@@ -53,7 +57,7 @@ public class Note
 	@JsonDeserialize
 	Integer notebook_id;
 	
-	@NotEmpty
+	//@NotEmpty
 	@Lob
 	@Field
 	String plain_content;

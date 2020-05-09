@@ -1,0 +1,10 @@
+[mysqld]
+slow-query-log = 1
+slow-query-log-file = /bitnami/mysql/data/mysql-slow-query.log
+long_query_time = 1
+log-queries-not-using-indexes
+log-error = /bitnami/mysql/data/mysql-error.log
+
+# Accept connections from any IP address
+bind-address = 0.0.0.0
+max_allowed_packet=128M
