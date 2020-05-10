@@ -66,9 +66,9 @@ public class NoteController
 	}
 	
 	@GetMapping("search/{searchtxt}")
-	public List<Note> searchNotes(@PathVariable("searchtxt") String txt)
+	public Set<Note> searchNotes(@PathVariable("searchtxt") String txt)
 	{
-		List<Note> res = Collections.EMPTY_LIST;
+		Set<Note> res = Collections.EMPTY_SET;
 		res = service.searchNotes(txt);
 		return res;
 	}

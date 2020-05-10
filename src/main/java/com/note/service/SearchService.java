@@ -25,11 +25,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.note.pojo.*;
+import com.note.repo.NoteRepository;
 
 @Service
 public class SearchService
 {
 	private EntityManager em;
+	
+	@Autowired
+    NoteRepository note_repo;
 
     @Autowired
     public SearchService(final EntityManagerFactory entityManagerFactory) {
@@ -51,7 +55,7 @@ public class SearchService
 	}
 
 	@Transactional(readOnly = true)
-	public List<Note> fuzzySearch(String searchTerm)
+	public Set<Note> fuzzySearch(String searchTerm)
 	{
 
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
@@ -66,11 +70,12 @@ public class SearchService
 
 		// execute search
 
-		List<Note> notes = null;
+		Set<Note> notes = null;
 		try
 		{
-			notes = jpaQuery.getResultList();
+			notes = new LinkedHashSet<>(jpaQuery.getResultList());
 			//removeTags(notes);
+			//notes.addAll(note_repo.searchExactMatch(searchTerm)); //priority for exact match
 			notes = removeNonMatchedLines(notes,searchTerm);
 		}
 		catch (NoResultException nre)
@@ -81,9 +86,9 @@ public class SearchService
 		return notes;
 	}
 	
-  private List<Note> removeNonMatchedLines(List<Note> notes,String searchTerm)
+  private Set<Note> removeNonMatchedLines(Set<Note> notes,String searchTerm)
 	{
-		List<Note> newnotes = new ArrayList<>();
+		Set<Note> newnotes = new LinkedHashSet<>();
 		
 		for(Note note : notes)
 		{

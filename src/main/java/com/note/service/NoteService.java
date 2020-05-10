@@ -83,16 +83,10 @@ public class NoteService
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Note> searchNotes(String txt)
+	public Set<Note> searchNotes(String txt)
 	{
-		List<Note> res = Collections.EMPTY_LIST;
+		Set<Note> res = Collections.EMPTY_SET;
 		res = search.fuzzySearch(txt);
-		keepOnlyMatched(res,txt);
 		return res;
-	}
-	
-	public void keepOnlyMatched(List<Note> notes,String txt)
-	{
-		
 	}
 }
