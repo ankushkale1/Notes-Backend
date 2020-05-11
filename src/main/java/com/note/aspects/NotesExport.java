@@ -24,16 +24,21 @@ public class NotesExport
 		{
 			System.out.println("Called before save / update Note: "+note.getNotename());
 			new File(NOTE_PATH+"/"+note.getNotebook().getNotebookname()).mkdirs();
-			FileUtils.write(new File(NOTE_PATH+"/"+note.getNotebook().getNotebookname()+"/"+note.getNotename()+".json"),
+			FileUtils.write(
+					new File(NOTE_PATH+"/"+note.getNotebook().getNotebookname()
+					+"/"+note.getNotename()+".json"),
 					note.getJsonnotes());
 		}
 		catch(Exception e) {}
 	}
 	
-	@AfterReturning(pointcut="execution(* com.note.service.NoteService.*(..))",returning = "result")
+	@AfterReturning(pointcut="execution(* com.note.service.NoteService.*(..))"
+			,returning = "result")
 	public void logNotesOps(JoinPoint joinPoint, Object result)
 	{
 		System.out.println("Executed for every note service method..");
-		//System.out.println("Method: "+joinPoint.getSignature().getName()+" Args: "+joinPoint.getArgs()+" Return Value: "+result);
+		//System.out.println("Method: "+joinPoint.getSignature().getName()
+		//+" Args: "+joinPoint.getArgs()
+		//+" Return Value: "+result);
 	}
 }
