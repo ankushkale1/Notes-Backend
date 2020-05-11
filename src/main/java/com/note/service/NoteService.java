@@ -64,6 +64,12 @@ public class NoteService
 	public Notebook addNotebook(Notebook note)
 	{
 		Notebook res = null;
+		if(note.getParent() != null) //i.e parent passed
+		{
+			Optional<Notebook> parent = notebook_repo.findById(note.getParent().getNotebook_id());
+			note.setParent(parent.isPresent() ? parent.get() : null);
+		}
+			
 		res = notebook_repo.save(note);
 		return res;
 	}

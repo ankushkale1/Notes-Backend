@@ -38,13 +38,10 @@ public class NoteController
 		return res;
 	}
 	
-	@GetMapping("addNotebook/{notebookname}")
-	public Notebook addNoteBook(@PathVariable("notebookname") String notebookname)
+	@PostMapping("addNotebook")
+	public Notebook addNoteBook(@RequestBody Notebook book)
 	{
 		Notebook res = null;
-		
-		Notebook book = new Notebook();
-		book.setNotebookname(notebookname);
 		res = service.addNotebook(book);
 		return res;
 	}
