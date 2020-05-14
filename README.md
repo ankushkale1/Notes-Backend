@@ -4,5 +4,5 @@ Notes Application Backend
 A simple notes saving application in Spring Boot
 
 Stack:
-
-Spring Boot, MySQL , Hibernate Search
+Frontend: Quill, Bootstrap
+Spring Boot, MySQL , Hibernate Search, webp ( every image is converted and stored as webp )
