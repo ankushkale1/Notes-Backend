@@ -74,7 +74,7 @@ public class NotesExport
 				JSONObject image = (JSONObject) op.get("insert");
 				
 				if((image.getString("image") != null) &&
-						(image.getString("image").indexOf("data:image/") > -1)) //i.e this is an image node & have base64 data
+						(image.getString("image").indexOf("base64") > -1)) //i.e this is an image node & have base64 data
 				{
 					//System.out.println("Image length: "+image.getString("image").length());
 					String img_src = image.getString("image");
@@ -89,7 +89,9 @@ public class NotesExport
 							File src = File.createTempFile(note.getNote_id()+"_"+i, null);
 							OutputStream out = new FileOutputStream(src);
 							
-							String b64 = img_src.substring(img_src.indexOf(",")+2, img_src.length());
+							int idx = img_src.indexOf(", ") > -1 ? 2 : 1; //ie space is there then skip it
+							
+							String b64 = img_src.substring(img_src.indexOf(",")+idx, img_src.length());
 							byte[] rdata = Base64Utils.decodeFromString(b64);
 							out.write(rdata);
 							out.flush();
