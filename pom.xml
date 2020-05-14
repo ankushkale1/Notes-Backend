@@ -68,6 +68,11 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.13.1</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.biezhi</groupId>
+			<artifactId>webp-io</artifactId>
+			<version>0.0.5</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>

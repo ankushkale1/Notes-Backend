@@ -1,18 +1,26 @@
 package com.note.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 import com.fasterxml.jackson.databind.*;
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
+
+import io.github.biezhi.webp.WebpIO;
 
 @Service
 public class NoteService
@@ -58,6 +66,7 @@ public class NoteService
 		Note res = null;
 		res = note_repo.save(note);
 		res.setNotebook_id(res.getNotebook().getNotebook_id());
+		//convertImages(note);
 		return res;
 	}
 	

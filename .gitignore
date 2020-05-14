@@ -29,3 +29,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### MY ####
+com.note.pojo.Note/
+cwebp_tmp/
+dumps/
+JSON_NOTES/
+libs/
+lucene/
