@@ -7,6 +7,14 @@ $(document).ready(function ()
     $('.ql-editor').keypress(function(){
         unsaved_content = true;
     });
+    
+    //so that if we accedently close it will prompt
+    window.addEventListener("beforeunload", function (e) {
+        var confirmationMessage = "\o/";
+      
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage;                            //Webkit, Safari, Chrome
+      });
 });
 
 function clearPrevSearch()
@@ -140,8 +148,8 @@ var menu_template = `
             <a>
                 <i class="fa fa-sticky-note fa-lg"></i> {notebook_name} 
             </a>
-            <a onclick="deleteNotebook({notebook_id})">
-                <i class="fa fa-trash fa-lg btn pull-right" style="margin-top:5px"></i>
+            <a>
+                <i onclick="deleteNotebook({notebook_id})" class="fa fa-trash fa-lg btn pull-right" style="margin-top:5px"></i>
             </a>
         </li>
         <ul class="sub-menu collapse" id="nb_{notebook_id}">
@@ -150,10 +158,10 @@ var menu_template = `
 `;
 
 var menu_item_template = `
-        <li onclick="$('#menu-content li').removeClass('active'); $(this).addClass('active');">
-            <a id="n_{note_id}" onclick="getNote({note_id})">{note_name}</a>
-            <a onclick="deleteNote({note_id})" style="position: absolute; right:0px; min-width:0px; padding-right: 0px;">
-                <i class="fa fa-trash fa-lg btn" style="margin-top:5px"></i>
+        <li onclick="$('#menu-content li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
+            <a id="n_{note_id}">{note_name}</a>
+            <a style="position: absolute; right:0px; min-width:0px; padding-right: 0px;">
+                <i onclick="deleteNote({note_id})" class="fa fa-trash fa-lg btn" style="margin-top:5px"></i>
             </a>
         </li>
 `;
