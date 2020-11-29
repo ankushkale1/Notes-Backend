@@ -21,7 +21,7 @@ services:
     ports:
     - 3306:3306
     volumes:
-    - /home/ankush/Desktop/mysql:/bitnami/mysql/data
+    - /home/ankush/docker_volumes/mysql:/bitnami/mysql/data
     - ./my-mysql.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro  
     
   portainer:

@@ -1,4 +1,5 @@
-const SERVER_BASE = "http://localhost:8080/notes/"
+//dont put whole url else cors error and always have relative url
+const SERVER_BASE = "/notes/"
 
 const SERVER_URLS = 
 {

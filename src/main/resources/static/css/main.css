@@ -406,11 +406,9 @@ body {
     margin: 0px;
     padding: 0px;
     background-color: #2E3436;
-    color: white;
 }
 
 .ql-editor {
-    height: 448px;
     overflow: scroll;
     color: white;
 }

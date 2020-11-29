@@ -3,6 +3,7 @@ package com.note.controller;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,56 +18,56 @@ public class NoteController
 	NoteService service;
 	
 	@GetMapping("getNoteBooks")
-	public List<Notebook> listNoteBooks()
+	public ResponseEntity<List<Notebook>> listNoteBooks()
 	{
 		List<Notebook> res = Collections.EMPTY_LIST;
 		res = service.listNoteBooksOnly();
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@GetMapping("getNote/{noteid}")
-	public Note getNote(@PathVariable("noteid") Integer noteid)
+	public ResponseEntity<Note> getNote(@PathVariable("noteid") Integer noteid)
 	{
-		return service.getNoteDetails(noteid);
+		return ResponseEntity.ok(service.getNoteDetails(noteid));
 	}
 	
 	@PostMapping("addNote")
-	public Note addUpdateNote(@RequestBody Note note)
+	public ResponseEntity<Note> addUpdateNote(@RequestBody Note note)
 	{
 		Note res = null;
 		res = service.addUpdateNote(note);
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@PostMapping("addNotebook")
-	public Notebook addNoteBook(@RequestBody Notebook book)
+	public ResponseEntity<Notebook> addNoteBook(@RequestBody Notebook book)
 	{
 		Notebook res = null;
 		res = service.addNotebook(book);
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@GetMapping("deleteNote/{noteid}")
-	public boolean deleteNote(@PathVariable("noteid") Integer note_id)
+	public ResponseEntity<Boolean> deleteNote(@PathVariable("noteid") Integer note_id)
 	{
 		boolean res = false;
 		res = service.deleteNote(note_id);
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@GetMapping("deleteNotebook/{notebookid}")
-	public boolean deleteNotebook(@PathVariable("notebookid") Integer notebook_id)
+	public ResponseEntity<Boolean> deleteNotebook(@PathVariable("notebookid") Integer notebook_id)
 	{
 		boolean res = false;
 		res = service.deleteNotebook(notebook_id);
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@GetMapping("search/{searchtxt}")
-	public Set<Note> searchNotes(@PathVariable("searchtxt") String txt)
+	public ResponseEntity<Set<Note>> searchNotes(@PathVariable("searchtxt") String txt)
 	{
 		Set<Note> res = Collections.EMPTY_SET;
 		res = service.searchNotes(txt);
-		return res;
+		return ResponseEntity.ok(res);
 	}
 }
