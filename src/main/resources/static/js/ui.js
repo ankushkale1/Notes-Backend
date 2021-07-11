@@ -1,62 +1,56 @@
-$(document).ready(function () 
-{
+$(document).ready(function () {
     sideBarInit();
     pageInit();
     popup_init();
 
-    $('.ql-editor').keypress(function(){
+    $('.ql-editor').keypress(function () {
         unsaved_content = true;
     });
-    
+
     //so that if we accedently close it will prompt
     window.addEventListener("beforeunload", function (e) {
         var confirmationMessage = "\o/";
-      
+
         (e || window.event).returnValue = confirmationMessage; //Gecko + IE
         return confirmationMessage;                            //Webkit, Safari, Chrome
-      });
+    });
 });
 
-function clearPrevSearch()
-{
+function clearPrevSearch() {
     $('#search-content').html('');
     $('[name="stxt"]').val("");
 }
 
-function htmlbodyHeightUpdate(){
-    var height3 = $( window ).height()
-    var height1 = $('.nav').height()+50
+function htmlbodyHeightUpdate() {
+    var height3 = $(window).height()
+    var height1 = $('.nav').height() + 50
     height2 = $('.main').height()
-    if(height2 > height3){
-        $('html').height(Math.max(height1,height3,height2)+10);
-        $('body').height(Math.max(height1,height3,height2)+10);
+    if (height2 > height3) {
+        $('html').height(Math.max(height1, height3, height2) + 10);
+        $('body').height(Math.max(height1, height3, height2) + 10);
+    } else {
+        $('html').height(Math.max(height1, height3, height2));
+        $('body').height(Math.max(height1, height3, height2));
     }
-    else
-    {
-        $('html').height(Math.max(height1,height3,height2));
-        $('body').height(Math.max(height1,height3,height2));
-    }
-    
+
 }
 
-function sideBarInit()
-{
+function sideBarInit() {
     htmlbodyHeightUpdate()
-    $( window ).resize(function() {
+    $(window).resize(function () {
         htmlbodyHeightUpdate()
     });
-    $( window ).scroll(function() {
+    $(window).scroll(function () {
         height2 = $('.main').height()
-          htmlbodyHeightUpdate()
+        htmlbodyHeightUpdate()
     });
 }
 
-function popup_init()
-{
-    $(document).ready(function() {
+function popup_init() {
+    $(document).ready(function () {
         $('.mypopup').magnificPopup({
-        type:'inline',
-        midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+            type: 'inline',
+            midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         });
     });
 }
@@ -112,18 +106,17 @@ var editor = null;
 var bindings = {
 
     code:
-    {
-        key: 'C', 
-        shiftKey: null, 
-        ctrlKey : true,
-        altKey : true,
-
-        handler: function(range, context) 
         {
-            //console.info("Alt + ctrl + C");
-            editor.formatText(range, 'code', true);
+            key: 'C',
+            shiftKey: null,
+            ctrlKey: true,
+            altKey: true,
+
+            handler: function (range, context) {
+                //console.info("Alt + ctrl + C");
+                editor.formatText(range, 'code', true);
+            }
         }
-    }
 };
 
 //$(document).ready()
@@ -168,62 +161,41 @@ var menu_item_template = `
 
 var mymenu = "";
 
-function populateNoteBooks()
-{
+function populateNoteBooks() {
     $('#menu-content').html("");
 
     $('.mynotebooks').html('');
 
-    for (let value of notebook_meta_map.values())
-    {
+    for (let value of notebook_meta_map.values()) {
         var notebook = value;
 
         var menu = menu_template;
-        menu = menu.replaceAll("{notebook_id}",notebook.notebook_id);
-        menu = menu.replaceAll("{notebook_name}",notebook.notebookname);
+        menu = menu.replaceAll("{notebook_id}", notebook.notebook_id);
+        menu = menu.replaceAll("{notebook_name}", notebook.notebookname);
 
         var menu_items = "";
 
         //populate create note select
         $('.mynotebooks').append(`<option value="${notebook.notebook_id}"> 
                                 ${notebook.notebookname} 
-                            </option>`); 
+                            </option>`);
 
-        if(notebook.notes)
-        {
-            for(var j=0;j<notebook.notes.length;j++)
-            {
+        if (notebook.notes) {
+            for (var j = 0; j < notebook.notes.length; j++) {
                 var note = notebook.notes[j];
                 var menu_item = menu_item_template;
-                menu_item = menu_item.replaceAll("{note_id}",note.note_id);
-                menu_item = menu_item.replaceAll("{note_name}",note.notename);
-                menu_item = menu_items += "\n "+menu_item;
+                menu_item = menu_item.replaceAll("{note_id}", note.note_id);
+                menu_item = menu_item.replaceAll("{note_name}", note.notename);
+                menu_item = menu_items += "\n " + menu_item;
             }
 
-            menu = menu.replaceAll("{menuitems}",menu_items);
+            menu = menu.replaceAll("{menuitems}", menu_items);
         }
 
         $('#menu-content').append(menu);
-        mymenu+="\n "+menu;
+        mymenu += "\n " + menu;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 String.prototype.replaceAll = function (stringToFind, stringToReplace) {

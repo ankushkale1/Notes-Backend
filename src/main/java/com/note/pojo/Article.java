@@ -10,67 +10,67 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class Article
 {
-	@Id
-	@GeneratedValue
-	Integer aid;
-	
-	String url;
-	
-	String data;
-	
-	@CreationTimestamp
-	LocalDateTime cdate;
-	
-	@UpdateTimestamp
-	LocalDateTime udate;
+    @Id
+    @GeneratedValue
+    Integer aid;
 
-	public Integer getAid()
-	{
-		return aid;
-	}
+    String url;
 
-	public void setAid(Integer aid)
-	{
-		this.aid = aid;
-	}
+    String data;
 
-	public String getUrl()
-	{
-		return url;
-	}
+    @CreationTimestamp
+    LocalDateTime cdate;
 
-	public void setUrl(String url)
-	{
-		this.url = url;
-	}
+    @UpdateTimestamp
+    LocalDateTime udate;
 
-	public String getData()
-	{
-		return data;
-	}
+    public Integer getAid()
+    {
+        return aid;
+    }
 
-	public void setData(String data)
-	{
-		this.data = data;
-	}
+    public void setAid(Integer aid)
+    {
+        this.aid = aid;
+    }
 
-	public LocalDateTime getCdate()
-	{
-		return cdate;
-	}
+    public String getUrl()
+    {
+        return url;
+    }
 
-	public void setCdate(LocalDateTime cdate)
-	{
-		this.cdate = cdate;
-	}
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
 
-	public LocalDateTime getUdate()
-	{
-		return udate;
-	}
+    public String getData()
+    {
+        return data;
+    }
 
-	public void setUdate(LocalDateTime udate)
-	{
-		this.udate = udate;
-	}
+    public void setData(String data)
+    {
+        this.data = data;
+    }
+
+    public LocalDateTime getCdate()
+    {
+        return cdate;
+    }
+
+    public void setCdate(LocalDateTime cdate)
+    {
+        this.cdate = cdate;
+    }
+
+    public LocalDateTime getUdate()
+    {
+        return udate;
+    }
+
+    public void setUdate(LocalDateTime udate)
+    {
+        this.udate = udate;
+    }
 }

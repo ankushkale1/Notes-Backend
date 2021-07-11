@@ -12,15 +12,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class NotesAppApplication implements WebMvcConfigurer
 {
 
-	@Override
-	public void addCorsMappings(CorsRegistry registry)
-	{
-		registry.addMapping("/**");
-	}
+    @Override
+    public void addCorsMappings(CorsRegistry registry)
+    {
+        registry.addMapping("/**");
+    }
 
-	public static void main(String[] args)
-	{
-		SpringApplication.run(NotesAppApplication.class, args);
-	}
+    public static void main(String[] args)
+    {
+        SpringApplication.run(NotesAppApplication.class, args);
+    }
 
 }

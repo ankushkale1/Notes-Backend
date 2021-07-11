@@ -1,29 +1,29 @@
 version: '3'
 
-#networks:
-#  internal-network:
-#    internal: true
-    
+  #networks:
+  #  internal-network:
+  #    internal: true
+
 services:
 
   mysqldb:
     container_name: mysql_notes
     image: bitnami/mysql:latest
     #restart: always
-#    networks:
-#    - internal-network
+    #    networks:
+    #    - internal-network
     #network_mode: host
     environment:
-    - MYSQL_ROOT_PASSWORD=root@123
-    - MYSQL_DATABASE=notesdb
-    - MYSQL_USER=mysqluser
-    - MYSQL_PASSWORD=password@123
+      - MYSQL_ROOT_PASSWORD=root@123
+      - MYSQL_DATABASE=notesdb
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=password@123
     ports:
-    - 3306:3306
+      - 3306:3306
     volumes:
-    - /home/ankush/docker_volumes/mysql:/bitnami/mysql/data
-    - ./my-mysql.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro  
-    
+      - /home/ankush/docker_volumes/mysql:/bitnami/mysql/data
+      - ./my-mysql.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
+
   portainer:
     container_name: portainer
     image: portainer/portainer

@@ -19,107 +19,107 @@ import java.util.*;
 @Entity
 public class Notebook
 {
-	@Id
-	@GeneratedValue
-	Integer notebook_id;
-	
-	@NotBlank
-	String notebookname;
-	
-	@Column(updatable = false)
-	@CreationTimestamp
-	LocalDateTime cdate;
-	
-	@UpdateTimestamp
-	LocalDateTime udate;
-	
-	@OneToMany(mappedBy="notebook",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JsonManagedReference
-	Set<Note> notes;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-	//@JsonIgnore
-	@JoinColumn(name="parent_notebook_id")
-	@JsonBackReference
-	Notebook parent = null;
-	
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-	@OneToMany(mappedBy = "parent",fetch = FetchType.EAGER)
-	List<Notebook> sub_notebooks;
-	
-	public Notebook()
-	{
-		
-	}
+    @Id
+    @GeneratedValue
+    Integer notebook_id;
 
-	public Notebook getParent()
-	{
-		return parent;
-	}
+    @NotBlank
+    String notebookname;
 
-	public void setParent(Notebook parent)
-	{
-		this.parent = parent;
-	}
+    @Column(updatable = false)
+    @CreationTimestamp
+    LocalDateTime cdate;
 
-	public List<Notebook> getSub_notebooks()
-	{
-		return sub_notebooks;
-	}
+    @UpdateTimestamp
+    LocalDateTime udate;
 
-	public void setSub_notebooks(List<Notebook> sub_notebooks)
-	{
-		this.sub_notebooks = sub_notebooks;
-	}
+    @OneToMany(mappedBy = "notebook", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    Set<Note> notes;
 
-	public Integer getNotebook_id()
-	{
-		return notebook_id;
-	}
+    @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne
+    //@JsonIgnore
+    @JoinColumn(name = "parent_notebook_id")
+    @JsonBackReference
+    Notebook parent = null;
 
-	public void setNotebook_id(Integer notebook_id)
-	{
-		this.notebook_id = notebook_id;
-	}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    List<Notebook> sub_notebooks;
 
-	public String getNotebookname()
-	{
-		return notebookname;
-	}
+    public Notebook()
+    {
 
-	public void setNotebookname(String notebookname)
-	{
-		this.notebookname = notebookname;
-	}
+    }
 
-	public LocalDateTime getCdate()
-	{
-		return cdate;
-	}
+    public Notebook getParent()
+    {
+        return parent;
+    }
 
-	public void setCdate(LocalDateTime cdate)
-	{
-		this.cdate = cdate;
-	}
+    public void setParent(Notebook parent)
+    {
+        this.parent = parent;
+    }
 
-	public LocalDateTime getUdate()
-	{
-		return udate;
-	}
+    public List<Notebook> getSub_notebooks()
+    {
+        return sub_notebooks;
+    }
 
-	public void setUdate(LocalDateTime udate)
-	{
-		this.udate = udate;
-	}
+    public void setSub_notebooks(List<Notebook> sub_notebooks)
+    {
+        this.sub_notebooks = sub_notebooks;
+    }
 
-	public Set<Note> getNotes()
-	{
-		return notes;
-	}
+    public Integer getNotebook_id()
+    {
+        return notebook_id;
+    }
 
-	public void setNotes(Set<Note> notes)
-	{
-		this.notes = notes;
-	}
+    public void setNotebook_id(Integer notebook_id)
+    {
+        this.notebook_id = notebook_id;
+    }
+
+    public String getNotebookname()
+    {
+        return notebookname;
+    }
+
+    public void setNotebookname(String notebookname)
+    {
+        this.notebookname = notebookname;
+    }
+
+    public LocalDateTime getCdate()
+    {
+        return cdate;
+    }
+
+    public void setCdate(LocalDateTime cdate)
+    {
+        this.cdate = cdate;
+    }
+
+    public LocalDateTime getUdate()
+    {
+        return udate;
+    }
+
+    public void setUdate(LocalDateTime udate)
+    {
+        this.udate = udate;
+    }
+
+    public Set<Note> getNotes()
+    {
+        return notes;
+    }
+
+    public void setNotes(Set<Note> notes)
+    {
+        this.notes = notes;
+    }
 }

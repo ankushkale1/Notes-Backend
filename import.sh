@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mysql -h127.0.0.1 -uroot -proot@123 notesdb < $1
+mysql -h140.238.255.72 -uroot -ppassword@123 notesdb <$1
