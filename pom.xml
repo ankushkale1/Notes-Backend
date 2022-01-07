@@ -16,7 +16,7 @@
     <description>A Notes Project</description>
 
     <properties>
-        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
     </properties>
 
     <dependencies>
