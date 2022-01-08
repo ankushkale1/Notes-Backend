@@ -1,5 +1,6 @@
 package com.note.pojo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -24,24 +25,27 @@ import lombok.Builder;
 public class Note
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Field(termVector = TermVector.YES)
-    Integer note_id;
+    int note_id;
 
     @NotBlank
     @Field
+    @Basic
     String notename;
 
     @NotBlank
-    @Lob
+    @Basic
     String jsonnotes;
 
     @Column(updatable = false)
     @CreationTimestamp
-    LocalDateTime cdate;
+    @Basic
+    Timestamp cdate;
 
     @UpdateTimestamp
-    LocalDateTime udate;
+    @Basic
+    Timestamp udate;
 
     @NotEmpty
     @ElementCollection
@@ -59,8 +63,8 @@ public class Note
     Integer notebook_id;
 
     //@NotEmpty
-    @Lob
     @Field
+    @Basic
     String plain_content;
 
     public Note()
@@ -128,22 +132,22 @@ public class Note
         this.jsonnotes = jsonnotes;
     }
 
-    public LocalDateTime getCdate()
+    public Timestamp getCdate()
     {
         return cdate;
     }
 
-    public void setCdate(LocalDateTime cdate)
+    public void setCdate(Timestamp cdate)
     {
         this.cdate = cdate;
     }
 
-    public LocalDateTime getUdate()
+    public Timestamp getUdate()
     {
         return udate;
     }
 
-    public void setUdate(LocalDateTime udate)
+    public void setUdate(Timestamp udate)
     {
         this.udate = udate;
     }
@@ -168,7 +172,7 @@ public class Note
     public boolean equals(Object obj)
     {
         if (obj instanceof Note)
-            return note_id.equals(((Note) obj).note_id);
+            return note_id == (((Note) obj).note_id);
         else
             return false;
     }
