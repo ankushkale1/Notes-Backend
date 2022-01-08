@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.validation.constraints.*;
 
+import lombok.Data;
 import org.hibernate.annotations.*;
 import org.hibernate.search.annotations.*;
 
@@ -21,7 +22,7 @@ import lombok.Builder;
 
 @Entity
 @Indexed
-//@Builder(toBuilder=true)
+@Data
 public class Note
 {
     @Id
@@ -70,96 +71,6 @@ public class Note
     public Note()
     {
 
-    }
-
-    public String getPlain_content()
-    {
-        return plain_content;
-    }
-
-    public void setPlain_content(String plain_content)
-    {
-        this.plain_content = plain_content;
-    }
-
-    public Integer getNotebook_id()
-    {
-        return notebook_id;
-    }
-
-    public void setNotebook_id(Integer notebook_id)
-    {
-        this.notebook_id = notebook_id;
-    }
-
-    public Notebook getNotebook()
-    {
-        return notebook;
-    }
-
-    public void setNotebook(Notebook notebook)
-    {
-        this.notebook = notebook;
-    }
-
-    public Integer getNote_id()
-    {
-        return note_id;
-    }
-
-    public void setNote_id(Integer note_id)
-    {
-        this.note_id = note_id;
-    }
-
-    public String getNotename()
-    {
-        return notename;
-    }
-
-    public void setNotename(String notename)
-    {
-        this.notename = notename;
-    }
-
-    public String getJsonnotes()
-    {
-        return jsonnotes;
-    }
-
-    public void setJsonnotes(String jsonnotes)
-    {
-        this.jsonnotes = jsonnotes;
-    }
-
-    public Timestamp getCdate()
-    {
-        return cdate;
-    }
-
-    public void setCdate(Timestamp cdate)
-    {
-        this.cdate = cdate;
-    }
-
-    public Timestamp getUdate()
-    {
-        return udate;
-    }
-
-    public void setUdate(Timestamp udate)
-    {
-        this.udate = udate;
-    }
-
-    public Set<String> getKeywords()
-    {
-        return keywords;
-    }
-
-    public void setKeywords(Set<String> keywords)
-    {
-        this.keywords = keywords;
     }
 
     @Override

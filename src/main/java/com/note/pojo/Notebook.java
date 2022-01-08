@@ -3,6 +3,7 @@ package com.note.pojo;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
+@Data
 public class Notebook
 {
     @Id
@@ -51,75 +53,5 @@ public class Notebook
     public Notebook()
     {
 
-    }
-
-    public Notebook getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(Notebook parent)
-    {
-        this.parent = parent;
-    }
-
-    public List<Notebook> getSub_notebooks()
-    {
-        return sub_notebooks;
-    }
-
-    public void setSub_notebooks(List<Notebook> sub_notebooks)
-    {
-        this.sub_notebooks = sub_notebooks;
-    }
-
-    public Integer getNotebook_id()
-    {
-        return notebook_id;
-    }
-
-    public void setNotebook_id(Integer notebook_id)
-    {
-        this.notebook_id = notebook_id;
-    }
-
-    public String getNotebookname()
-    {
-        return notebookname;
-    }
-
-    public void setNotebookname(String notebookname)
-    {
-        this.notebookname = notebookname;
-    }
-
-    public LocalDateTime getCdate()
-    {
-        return cdate;
-    }
-
-    public void setCdate(LocalDateTime cdate)
-    {
-        this.cdate = cdate;
-    }
-
-    public LocalDateTime getUdate()
-    {
-        return udate;
-    }
-
-    public void setUdate(LocalDateTime udate)
-    {
-        this.udate = udate;
-    }
-
-    public Set<Note> getNotes()
-    {
-        return notes;
-    }
-
-    public void setNotes(Set<Note> notes)
-    {
-        this.notes = notes;
     }
 }

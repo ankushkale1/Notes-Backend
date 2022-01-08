@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
+@Data
 public class Article
 {
     @Id
@@ -23,54 +25,4 @@ public class Article
 
     @UpdateTimestamp
     LocalDateTime udate;
-
-    public Integer getAid()
-    {
-        return aid;
-    }
-
-    public void setAid(Integer aid)
-    {
-        this.aid = aid;
-    }
-
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public void setUrl(String url)
-    {
-        this.url = url;
-    }
-
-    public String getData()
-    {
-        return data;
-    }
-
-    public void setData(String data)
-    {
-        this.data = data;
-    }
-
-    public LocalDateTime getCdate()
-    {
-        return cdate;
-    }
-
-    public void setCdate(LocalDateTime cdate)
-    {
-        this.cdate = cdate;
-    }
-
-    public LocalDateTime getUdate()
-    {
-        return udate;
-    }
-
-    public void setUdate(LocalDateTime udate)
-    {
-        this.udate = udate;
-    }
 }
