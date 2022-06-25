@@ -25,7 +25,7 @@ services:
       - ./my-mysql.cnf:/opt/bitnami/mysql/conf/my_custom.cnf:ro
 
   portainer:
-    container_name: portainer
+    container_name: portainer_notes
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
     restart: always

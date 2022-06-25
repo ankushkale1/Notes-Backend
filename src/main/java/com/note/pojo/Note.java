@@ -25,53 +25,50 @@ import lombok.Builder;
 @Data
 public class Note
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Field(termVector = TermVector.YES)
-    int note_id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	//@Field(termVector = TermVector.YES)
+	Integer note_id;
 
-    @NotBlank
-    @Field
-    @Basic
-    String notename;
+	@NotBlank
+	@Field
+	String notename;
 
-    @NotBlank
-    @Basic
-    String jsonnotes;
+	@NotBlank
+	@Lob
+	String jsonnotes;
 
-    @Column(updatable = false)
-    @CreationTimestamp
-    @Basic
-    Timestamp cdate;
+	@Column(updatable = false)
+	@CreationTimestamp
+	LocalDateTime cdate;
 
-    @UpdateTimestamp
-    @Basic
-    Timestamp udate;
+	@UpdateTimestamp
+	LocalDateTime udate;
 
-    @NotEmpty
-    @ElementCollection
-    Set<String> keywords;
+	@NotEmpty
+	@ElementCollection
+	Set<String> keywords;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "notebook_id", nullable = false)
-    @JsonBackReference
-    Notebook notebook;
+	@ManyToOne(optional=false)
+    @JoinColumn(name="notebook_id", nullable=false)
+	@JsonBackReference
+	Notebook notebook;
 
-    @Transient
-    //as above thing skips notebook object
-    @JsonSerialize
-    @JsonDeserialize
-    Integer notebook_id;
+	@Transient
+	//as above thing skips notebook object
+	@JsonSerialize
+	@JsonDeserialize
+	Integer notebook_id;
 
-    //@NotEmpty
-    @Field
-    @Basic
-    String plain_content;
+	//@NotEmpty
+	@Lob
+	@Field
+	String plain_content;
 
-    public Note()
-    {
+	public Note()
+	{
 
-    }
+	}
 
     @Override
     public int hashCode()
@@ -83,7 +80,7 @@ public class Note
     public boolean equals(Object obj)
     {
         if (obj instanceof Note)
-            return note_id == (((Note) obj).note_id);
+            return note_id.equals(((Note) obj).note_id);
         else
             return false;
     }
