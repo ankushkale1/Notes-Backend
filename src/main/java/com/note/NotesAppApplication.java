@@ -2,7 +2,9 @@ package com.note;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,4 +24,8 @@ public class NotesAppApplication implements WebMvcConfigurer
         SpringApplication.run(NotesAppApplication.class, args);
     }
 
+    @Bean
+    public RestTemplate createTemplate(){
+        return new RestTemplate();
+    }
 }

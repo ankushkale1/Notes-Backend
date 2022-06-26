@@ -1,6 +1,8 @@
 package com.note.pojo;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.*;
@@ -33,9 +35,7 @@ public class Note
     String jsonnotes;
 
     @CreatedDate
-    Timestamp cdate;
-
-    Timestamp udate;
+    Date cdate;
 
     @NotEmpty
     Set<String> keywords;
@@ -76,7 +76,7 @@ public class Note
     public String toString()
     {
         return "Note [note_id=" + note_id + ", notename=" + notename + ", jsonnotes=" + jsonnotes + ", cdate=" + cdate
-                + ", udate=" + udate + ", keywords=" + keywords + ", notebook=" + notebook + ", notebook_id="
+                +", keywords=" + keywords + ", notebook=" + notebook + ", notebook_id="
                 + notebook_id + ", plain_content=" + plain_content + "]";
     }
 

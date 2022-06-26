@@ -28,7 +28,7 @@ public class Notebook
     String notebookname;
 
     @CreatedDate
-    LocalDateTime cdate;
+    Date cdate;
 
     @DBRef
     @JsonManagedReference
