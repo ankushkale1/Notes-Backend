@@ -1,28 +1,22 @@
 package com.note.pojo;
 
 import java.time.LocalDateTime;
-
-import javax.persistence.*;
-
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
 @Data
+@Document
 public class Article
 {
     @Id
-    @GeneratedValue
-    Integer aid;
+    String aid;
 
     String url;
 
     String data;
 
-    @CreationTimestamp
+    @CreatedDate
     LocalDateTime cdate;
-
-    @UpdateTimestamp
-    LocalDateTime udate;
 }

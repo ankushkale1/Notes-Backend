@@ -127,7 +127,7 @@ function addNotebook(notebookname, notebook) {
     book = {
         "notebook_id": null,
         "notebookname": notebookname,
-        "parent": {
+        "parent": notebook && {
             "notebook_id": notebook
         }
     }

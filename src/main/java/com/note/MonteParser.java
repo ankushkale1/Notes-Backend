@@ -97,7 +97,7 @@ public class MonteParser implements CommandLineRunner
                             keywords.add("key");
 
                         note.setJsonnotes(template);
-                        note.setNotebook(book);
+                        //note.setNotebook(book);
                         note.setKeywords(keywords);
                         note_service.addUpdateNote(note);
                         count++;

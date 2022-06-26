@@ -142,7 +142,7 @@ var menu_template = `
                 <i class="fa fa-sticky-note fa-lg"></i> {notebook_name} 
             </a>
             <a>
-                <i onclick="deleteNotebook({notebook_id})" class="fa fa-trash fa-lg btn pull-right" style="margin-top:5px"></i>
+                <i onclick="deleteNotebook('{notebook_id}')" class="fa fa-trash fa-lg btn pull-right" style="margin-top:5px"></i>
             </a>
         </li>
         <ul class="sub-menu collapse" id="nb_{notebook_id}">
@@ -151,10 +151,10 @@ var menu_template = `
 `;
 
 var menu_item_template = `
-        <li onclick="$('#menu-content li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
+        <li onclick="$('#menu-content li').removeClass('active'); $(this).addClass('active'); getNote('{note_id}');">
             <a id="n_{note_id}">{note_name}</a>
             <a style="position: absolute; right:0px; min-width:0px; padding-right: 0px;">
-                <i onclick="deleteNote({note_id})" class="fa fa-trash fa-lg btn" style="margin-top:5px"></i>
+                <i onclick="deleteNote('{note_id}')" class="fa fa-trash fa-lg btn" style="margin-top:5px"></i>
             </a>
         </li>
 `;

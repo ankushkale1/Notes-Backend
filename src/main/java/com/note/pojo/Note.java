@@ -1,59 +1,46 @@
 package com.note.pojo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
 import javax.validation.constraints.*;
 
 import lombok.Data;
-import org.hibernate.annotations.*;
-import org.hibernate.search.annotations.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Builder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-@Entity
-@Indexed
+@Document
 @Data
 public class Note
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Field(termVector = TermVector.YES)
-    int note_id;
+    String note_id;
 
     @NotBlank
-    @Field
-    @Basic
     String notename;
 
     @NotBlank
-    @Basic
     String jsonnotes;
 
-    @Column(updatable = false)
-    @CreationTimestamp
-    @Basic
+    @CreatedDate
     Timestamp cdate;
 
-    @UpdateTimestamp
-    @Basic
     Timestamp udate;
 
     @NotEmpty
-    @ElementCollection
     Set<String> keywords;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "notebook_id", nullable = false)
+    @DBRef
     @JsonBackReference
     Notebook notebook;
 
@@ -61,11 +48,8 @@ public class Note
     //as above thing skips notebook object
     @JsonSerialize
     @JsonDeserialize
-    Integer notebook_id;
+    String notebook_id;
 
-    //@NotEmpty
-    @Field
-    @Basic
     String plain_content;
 
     public Note()
@@ -83,7 +67,7 @@ public class Note
     public boolean equals(Object obj)
     {
         if (obj instanceof Note)
-            return note_id == (((Note) obj).note_id);
+            return note_id.equals(((Note) obj).note_id);
         else
             return false;
     }

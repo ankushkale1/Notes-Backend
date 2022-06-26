@@ -29,26 +29,26 @@ public class NoteService
     NoteRepository note_repo;
 
     @Autowired
-    SearchService search;
-
-    @Autowired
     NotebookRepository notebook_repo;
 
-    @Transactional(readOnly = true)
     public List<Notebook> listNoteBooksOnly()
     {
         List<Notebook> res = Collections.EMPTY_LIST;
-        res = notebook_repo.getNotebooksOnly();
+        res = notebook_repo.findAll();
 
         for (Notebook notebook : res)
-            for (Note note : notebook.getNotes())
-                note.setJsonnotes("");
+        {
+            if(notebook.getNotes() != null)
+            {
+                for (Note note : notebook.getNotes())
+                    note.setJsonnotes("");
+            }
+        }
 
         return res;
     }
 
-    @Transactional(readOnly = true)
-    public Note getNoteDetails(Integer note_id)
+    public Note getNoteDetails(String note_id)
     {
         Optional<Note> note = note_repo.findById(note_id);
         if (note.isPresent())
@@ -64,6 +64,11 @@ public class NoteService
     {
         Note res = null;
         res = note_repo.save(note);
+        Notebook book = notebook_repo.findById(res.getNotebook().getNotebook_id()).get();
+        if(book.getNotes()  == null)
+            book.setNotes(new HashSet<>());
+        book.getNotes().add(res);
+        notebook_repo.save(book);
         res.setNotebook_id(res.getNotebook().getNotebook_id());
         //convertImages(note);
         return res;
@@ -82,25 +87,19 @@ public class NoteService
         return res;
     }
 
-    public boolean deleteNote(Integer note_id)
+    public boolean deleteNote(String note_id)
     {
         boolean res = true;
+        Notebook book = note_repo.findById(note_id).get().getNotebook();
         note_repo.deleteById(note_id);
+        notebook_repo.save(book);
         return res;
     }
 
-    public boolean deleteNotebook(Integer notebook_id)
+    public boolean deleteNotebook(String notebook_id)
     {
         boolean res = true;
         notebook_repo.deleteById(notebook_id);
-        return res;
-    }
-
-    @Transactional(readOnly = true)
-    public Set<Note> searchNotes(String txt)
-    {
-        Set<Note> res = Collections.EMPTY_SET;
-        res = search.fuzzySearch(txt);
         return res;
     }
 }

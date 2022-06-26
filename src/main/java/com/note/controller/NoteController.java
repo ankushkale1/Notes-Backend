@@ -26,7 +26,7 @@ public class NoteController
     }
 
     @GetMapping("getNote/{noteid}")
-    public ResponseEntity<Note> getNote(@PathVariable("noteid") Integer noteid)
+    public ResponseEntity<Note> getNote(@PathVariable("noteid") String noteid)
     {
         return ResponseEntity.ok(service.getNoteDetails(noteid));
     }
@@ -48,7 +48,7 @@ public class NoteController
     }
 
     @GetMapping("deleteNote/{noteid}")
-    public ResponseEntity<Boolean> deleteNote(@PathVariable("noteid") Integer note_id)
+    public ResponseEntity<Boolean> deleteNote(@PathVariable("noteid") String note_id)
     {
         boolean res = false;
         res = service.deleteNote(note_id);
@@ -56,18 +56,10 @@ public class NoteController
     }
 
     @GetMapping("deleteNotebook/{notebookid}")
-    public ResponseEntity<Boolean> deleteNotebook(@PathVariable("notebookid") Integer notebook_id)
+    public ResponseEntity<Boolean> deleteNotebook(@PathVariable("notebookid") String notebook_id)
     {
         boolean res = false;
         res = service.deleteNotebook(notebook_id);
-        return ResponseEntity.ok(res);
-    }
-
-    @GetMapping("search/{searchtxt}")
-    public ResponseEntity<Set<Note>> searchNotes(@PathVariable("searchtxt") String txt)
-    {
-        Set<Note> res = Collections.EMPTY_SET;
-        res = service.searchNotes(txt);
         return ResponseEntity.ok(res);
     }
 }
