@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.util.*;
 
-@Component
+//@Component
 public class CopyFromOtherNotes implements CommandLineRunner
 {
     @Autowired
