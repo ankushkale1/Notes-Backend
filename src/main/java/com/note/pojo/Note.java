@@ -37,6 +37,7 @@ public class Note
 
     @NotBlank
     @Basic
+    @Type(type = "text")
     String jsonnotes;
 
     @Column(updatable = false)
@@ -66,6 +67,7 @@ public class Note
     //@NotEmpty
     @Field
     @Basic
+    @Type(type = "text")
     String plain_content;
 
     public Note()
