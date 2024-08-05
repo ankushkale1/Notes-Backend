@@ -1,26 +1,23 @@
 package com.note.pojo;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
-public class Notebook
-{
+public class Notebook {
     @Id
     @GeneratedValue
     Integer notebook_id;
@@ -50,8 +47,7 @@ public class Notebook
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
     List<Notebook> sub_notebooks;
 
-    public Notebook()
-    {
+    public Notebook() {
 
     }
 }

@@ -1,43 +1,37 @@
 package com.note.pojo;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.validation.constraints.*;
-
-import lombok.Data;
-import org.hibernate.annotations.*;
-import org.hibernate.search.annotations.*;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import lombok.Builder;
+import java.sql.Timestamp;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Indexed
+//@Indexed
 @Data
-public class Note
-{
+public class Note {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Field(termVector = TermVector.YES)
     int note_id;
 
     @NotBlank
-    @Field
+//    @Field
     @Basic
     String notename;
 
     @NotBlank
     @Basic
-    @Type(type = "text")
+    @Column(columnDefinition = "LONGTEXT")
     String jsonnotes;
 
     @Column(updatable = false)
@@ -65,34 +59,30 @@ public class Note
     Integer notebook_id;
 
     //@NotEmpty
-    @Field
+//    @Field
     @Basic
-    @Type(type = "text")
+    @Column(columnDefinition = "LONGTEXT")
     String plain_content;
 
-    public Note()
-    {
+    public Note() {
 
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(note_id, notename, notebook_id);
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof Note)
-            return note_id == (((Note) obj).note_id);
+    public boolean equals(Object obj) {
+        if (obj instanceof Note note)
+            return note_id == (note.note_id);
         else
             return false;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Note [note_id=" + note_id + ", notename=" + notename + ", jsonnotes=" + jsonnotes + ", cdate=" + cdate
                 + ", udate=" + udate + ", keywords=" + keywords + ", notebook=" + notebook + ", notebook_id="
                 + notebook_id + ", plain_content=" + plain_content + "]";

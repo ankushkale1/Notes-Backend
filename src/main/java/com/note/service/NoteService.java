@@ -1,42 +1,31 @@
 package com.note.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
-
-import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
-
-import com.fasterxml.jackson.databind.*;
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import io.github.biezhi.webp.WebpIO;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
-public class NoteService
-{
+public class NoteService {
     @Autowired
     NoteRepository note_repo;
 
-    @Autowired
-    SearchService search;
+//    @Autowired
+//    SearchService search;
 
     @Autowired
     NotebookRepository notebook_repo;
 
     @Transactional(readOnly = true)
-    public List<Notebook> listNoteBooksOnly()
-    {
+    public List<Notebook> listNoteBooksOnly() {
         List<Notebook> res = Collections.EMPTY_LIST;
         res = notebook_repo.getNotebooksOnly();
 
@@ -48,11 +37,9 @@ public class NoteService
     }
 
     @Transactional(readOnly = true)
-    public Note getNoteDetails(Integer note_id)
-    {
+    public Note getNoteDetails(Integer note_id) {
         Optional<Note> note = note_repo.findById(note_id);
-        if (note.isPresent())
-        {
+        if (note.isPresent()) {
             Notebook book = note.get().getNotebook(); //so that we get notebook id
             note.get().setNotebook_id(book.getNotebook_id());
             return note.get();
@@ -60,8 +47,7 @@ public class NoteService
             return new Note();
     }
 
-    public Note addUpdateNote(Note note)
-    {
+    public Note addUpdateNote(Note note) {
         Note res = null;
         res = note_repo.save(note);
         res.setNotebook_id(res.getNotebook().getNotebook_id());
@@ -69,8 +55,7 @@ public class NoteService
         return res;
     }
 
-    public Notebook addNotebook(Notebook note)
-    {
+    public Notebook addNotebook(Notebook note) {
         Notebook res = null;
         if (note.getParent() != null) //i.e parent passed
         {
@@ -82,25 +67,22 @@ public class NoteService
         return res;
     }
 
-    public boolean deleteNote(Integer note_id)
-    {
+    public boolean deleteNote(Integer note_id) {
         boolean res = true;
         note_repo.deleteById(note_id);
         return res;
     }
 
-    public boolean deleteNotebook(Integer notebook_id)
-    {
+    public boolean deleteNotebook(Integer notebook_id) {
         boolean res = true;
         notebook_repo.deleteById(notebook_id);
         return res;
     }
 
     @Transactional(readOnly = true)
-    public Set<Note> searchNotes(String txt)
-    {
+    public Set<Note> searchNotes(String txt) {
         Set<Note> res = Collections.EMPTY_SET;
-        res = search.fuzzySearch(txt);
+//        res = search.fuzzySearch(txt);
         return res;
     }
 }

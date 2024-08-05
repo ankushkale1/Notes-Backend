@@ -1,79 +1,68 @@
 package com.note.aspects;
 
+import com.note.pojo.Note;
+import io.github.biezhi.webp.WebpIO;
 import org.apache.commons.io.FileUtils;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
-import java.io.*;
-import java.util.*;
-
-import com.note.pojo.Note;
-
-import io.github.biezhi.webp.WebpIO;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 @Aspect
 @Component
-public class NotesExport
-{
+public class NotesExport {
     final static String NOTE_PATH = "JSON_NOTES";
 
     @AfterReturning(pointcut = "execution(* com.note.service.*.addUpdateNote(*))"
             , returning = "note")
-    public void exportNote(Note note)
-    {
-        try
-        {
+    public void exportNote(Note note) {
+        try {
             System.out.println("Called before save / update Note: " + note.getNotename());
             new File(NOTE_PATH + "/" + note.getNotebook().getNotebookname()).mkdirs();
             FileUtils.write(
                     new File(NOTE_PATH + "/" + note.getNotebook().getNotebookname()
                             + "/" + note.getNotename() + ".json"),
                     note.getJsonnotes());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
         }
     }
 
     @Before("execution(* com.note.service.*.addUpdateNote(*))")
-    public void convertImages(JoinPoint point)
-    {
-        try
-        {
+    public void convertImages(JoinPoint point) {
+        try {
             Object[] args = point.getArgs();
             Note note = (Note) args[0];
             System.out.println("Converting Images Note: " + note.getNotename());
             convertImages(note);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
         }
     }
 
     @AfterReturning(pointcut = "execution(* com.note.service.NoteService.*(..))"
             , returning = "result")
-    public void logNotesOps(JoinPoint joinPoint, Object result)
-    {
+    public void logNotesOps(JoinPoint joinPoint, Object result) {
         System.out.println("Executed for every note service method..");
         //System.out.println("Method: "+joinPoint.getSignature().getName()
         //+" Args: "+joinPoint.getArgs()
         //+" Return Value: "+result);
     }
 
-    public void convertImages(Note note)
-    {
+    public void convertImages(Note note) {
         JSONObject jobj = new JSONObject(note.getJsonnotes());
         JSONArray arr = jobj.getJSONArray("ops");
 
-        for (int i = 0; i < arr.length(); i++)
-        {
+        for (int i = 0; i < arr.length(); i++) {
             JSONObject op = (JSONObject) arr.get(i);
 
-            if (op.get("insert") instanceof JSONObject)
-            {
-                JSONObject image = (JSONObject) op.get("insert");
+            if (op.get("insert") instanceof JSONObject image) {
 
                 if ((image.getString("image") != null) &&
                         (image.getString("image").indexOf("base64") > -1)) //i.e this is an image node & have base64 data
@@ -81,19 +70,17 @@ public class NotesExport
                     //System.out.println("Image length: "+image.getString("image").length());
                     String img_src = image.getString("image");
                     String img_type = image.getString("image").substring(0, image.getString("image").indexOf(";"));
-                    String ext = img_type.substring(img_type.indexOf("/") + 1, img_type.length());
+                    String ext = img_type.substring(img_type.indexOf("/") + 1);
                     //System.out.println("Img type: "+img_type+" File Ext: "+ext);
 
-                    if (!img_type.trim().contains("webp"))
-                    {
-                        try
-                        {
+                    if (!img_type.trim().contains("webp") && !img_type.trim().contains("gif")) {
+                        try {
                             File src = File.createTempFile(note.getNote_id() + "_" + i, null);
                             OutputStream out = new FileOutputStream(src);
 
                             int idx = img_src.indexOf(", ") > -1 ? 2 : 1; //ie space is there then skip it
 
-                            String b64 = img_src.substring(img_src.indexOf(",") + idx, img_src.length());
+                            String b64 = img_src.substring(img_src.indexOf(",") + idx);
                             byte[] rdata = Base64Utils.decodeFromString(b64);
                             out.write(rdata);
                             out.flush();
@@ -111,8 +98,7 @@ public class NotesExport
 
                             src.delete();
                             dest.delete();
-                        } catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             e.printStackTrace(System.out);
                         }
                     }
