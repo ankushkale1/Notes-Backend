@@ -1,5 +1,5 @@
 /* Adding gvnix styles css - NO COPIAR */
-@import 'http://geo-gvnix.rhcloud.com/resources/styles/standard.css';
+/*@import 'http://geo-gvnix.rhcloud.com/resources/styles/standard.css';*/
 /* Custom fixed navs */
 
 header.navbar + nav.navbar {
@@ -101,7 +101,6 @@ nav.sidebar, .main {
 
     /*Allow main to be next to Nav*/
     .main {
-        position: absolute;
         width: calc(100% - 40px); /*keeps 100% minus nav size*/
         margin-left: 40px;
         float: right;

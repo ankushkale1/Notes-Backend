@@ -1,5 +1,6 @@
 package com.note.aspects;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.note.pojo.Note;
 import io.github.biezhi.webp.WebpIO;
 import org.apache.commons.io.FileUtils;
@@ -9,17 +10,24 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 @Aspect
 @Component
 public class NotesExport {
     final static String NOTE_PATH = "JSON_NOTES";
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @AfterReturning(pointcut = "execution(* com.note.service.*.addUpdateNote(*))"
             , returning = "note")
@@ -41,7 +49,10 @@ public class NotesExport {
             Object[] args = point.getArgs();
             Note note = (Note) args[0];
             System.out.println("Converting Images Note: " + note.getNotename());
-            convertImages(note);
+            //convertImages(note);
+            Map<String, Object> quillDeltaJson = objectMapper.readValue(note.getJsonnotes(), Map.class);
+            processAndSaveNote(quillDeltaJson);
+            note.setJsonnotes(objectMapper.writeValueAsString(quillDeltaJson));
         } catch (Exception e) {
         }
     }
@@ -81,7 +92,7 @@ public class NotesExport {
                             int idx = img_src.indexOf(", ") > -1 ? 2 : 1; //ie space is there then skip it
 
                             String b64 = img_src.substring(img_src.indexOf(",") + idx);
-                            byte[] rdata = Base64Utils.decodeFromString(b64);
+                            byte[] rdata = Base64.getDecoder().decode(b64);
                             out.write(rdata);
                             out.flush();
 
@@ -90,7 +101,7 @@ public class NotesExport {
                             WebpIO.create().toWEBP(src, dest);
 
                             byte[] wbytes = FileUtils.readFileToByteArray(dest);
-                            String b64_w = Base64Utils.encodeToString(wbytes);
+                            String b64_w = Base64.getEncoder().encodeToString(wbytes);
 
                             //System.out.println("Outlength: "+b64_w.length());
 
@@ -107,5 +118,64 @@ public class NotesExport {
         }
 
         note.setJsonnotes(jobj.toString());
+    }
+
+    // Method to process Quill Delta and save the note
+    public String processAndSaveNote(Map<String, Object> quillDeltaJson) {
+        // Fetch ops list from Quill Delta JSON
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) quillDeltaJson.get("ops");
+
+        List<Map<String, Object>> updatedOps = new ArrayList<>();
+
+        // Iterate over the Delta ops to find images
+        for (Map<String, Object> op : ops) {
+            if (op.containsKey("insert")) {
+                Object insertValue = op.get("insert");
+
+                if (insertValue instanceof LinkedHashMap) {
+                    LinkedHashMap<String, Object> insertMap = (LinkedHashMap<String, Object>) insertValue;
+
+                    if (insertMap.containsKey("image")) {
+                        String imageUrl = (String) insertMap.get("image");
+
+                        // Check if it's an external image (starts with http)
+                        if (imageUrl.startsWith("http")) {
+                            try {
+                                // Convert external image to Base64
+                                String base64Image = convertImageToBase64(imageUrl);
+                                insertMap.put("image", base64Image); // Replace URL with Base64
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+            // Add the updated op to the list
+            updatedOps.add(op);
+        }
+
+        // Now you have updated ops with base64 images. Save the note (this could be a DB save operation).
+        // In this example, we will just print the updated JSON
+        quillDeltaJson.put("ops", updatedOps);
+        System.out.println("Updated Quill Delta JSON with Base64 images: " + quillDeltaJson);
+
+        // Return success message (you can save this to a database if needed)
+        return "Note saved successfully with Base64 images.";
+    }
+
+    // Convert an image from URL to Base64 format
+    private String convertImageToBase64(String imageUrl) throws Exception {
+        System.out.println(">> Converting Image to Base64..." + imageUrl);
+        URL url = new URL(imageUrl);
+        URLConnection connection = url.openConnection();
+        connection.setConnectTimeout(2000);  // Timeout for establishing connection
+        connection.setReadTimeout(5000);     // Timeout for reading data
+        String contentType = connection.getContentType();
+        try (InputStream is = connection.getInputStream()) {
+            byte[] imageBytes = is.readAllBytes();
+            System.out.println(">> Done Converting Image to Base64..." + imageUrl);
+            return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(imageBytes);
+        }
     }
 }

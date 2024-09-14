@@ -119,16 +119,53 @@ var bindings = {
         }
 };
 
+// function imageHandler() {
+//     var range = this.editor.getSelection();
+//     var value = prompt('please copy paste the image url here.');
+//
+//     if (value) {
+//         this.editor.insertEmbed(range.index, 'image', value, editor.sources.USER);
+//     }
+// }
+
+function imageHandler() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+
+    input.click();
+
+    input.onchange = () => {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64Image = e.target.result;
+                // Insert the base64 image into the editor
+                const range = editor.getSelection();
+                editor.insertEmbed(range.index, 'image', base64Image);
+            };
+            reader.readAsDataURL(file);  // Convert the file to base64
+        }
+    };
+}
+
 //$(document).ready()
 $(window).on('load', function () {
     editor = new Quill('#editor', {
         syntax: true,
         modules: {
-            toolbar: toolbarOptions,
+            //toolbar: toolbarOptions,
+            toolbar: {
+                container: toolbarOptions,
+                handlers: {
+                    image: imageHandler
+                }
+            },
             magicUrl: true,
             keyboard: {
                 bindings: bindings
-            }
+            },
         },
         theme: 'snow',
         imageDrop: true,
@@ -196,7 +233,6 @@ function populateNoteBooks() {
         mymenu += "\n " + menu;
     }
 }
-
 
 String.prototype.replaceAll = function (stringToFind, stringToReplace) {
     if (stringToFind === stringToReplace) return this;

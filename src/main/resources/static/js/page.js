@@ -328,3 +328,26 @@ const dSearch = function (fn, delay) {
 }
 
 const search = dSearch(searchText, 300);
+
+// Function to export Quill content to Markdown
+function exportToMarkdown() {
+    // Get HTML content from Quill editor
+    const htmlContent = editor.root.innerHTML;
+
+    // Initialize Turndown to convert HTML to Markdown
+    const turndownService = new TurndownService();
+    const markdownContent = turndownService.turndown(htmlContent);
+
+    // Create a Blob from the Markdown content
+    const blob = new Blob([markdownContent], {type: 'text/markdown'});
+
+    // Create a download link and trigger download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'quill-content.md';  // File name for the download
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+}
