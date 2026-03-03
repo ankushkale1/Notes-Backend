@@ -3,6 +3,7 @@ package com.note.pojo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.note.config.SyncIdGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -19,7 +20,11 @@ import java.util.Set;
 @Data
 public class Notebook {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "sync-id-gen")
+    @org.hibernate.annotations.GenericGenerator(
+            name = "sync-id-gen",
+            type = com.note.config.SyncIdGenerator.class
+    )
     Integer notebook_id;
 
     @NotBlank

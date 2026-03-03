@@ -19,9 +19,11 @@ import java.util.Set;
 @Data
 public class Note {
     @Id
-    @GeneratedValue
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Field(termVector = TermVector.YES)
+    @GeneratedValue(generator = "sync-id-gen")
+    @org.hibernate.annotations.GenericGenerator(
+            name = "sync-id-gen",
+            type = com.note.config.SyncIdGenerator.class
+    )
     int note_id;
 
     @NotBlank
@@ -43,7 +45,7 @@ public class Note {
     @Basic
     Timestamp udate;
 
-    @NotEmpty
+    //@NotEmpty
     @ElementCollection
     Set<String> keywords;
 

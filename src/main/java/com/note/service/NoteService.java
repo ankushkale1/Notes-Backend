@@ -5,6 +5,7 @@ import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,9 @@ import java.util.Set;
 public class NoteService {
     @Autowired
     NoteRepository note_repo;
+
+    @Autowired
+    BackupService backupService;
 
 //    @Autowired
 //    SearchService search;
@@ -52,7 +56,12 @@ public class NoteService {
         res = note_repo.save(note);
         res.setNotebook_id(res.getNotebook().getNotebook_id());
         //convertImages(note);
+        saveToBackup(res);
         return res;
+    }
+
+    public void saveToBackup(Note note) {
+        backupService.saveNote(note);
     }
 
     public Notebook addNotebook(Notebook note) {
@@ -64,19 +73,34 @@ public class NoteService {
         }
 
         res = notebook_repo.save(note);
+        saveNotebookToBackup(res);
         return res;
+    }
+
+    public void saveNotebookToBackup(Notebook notebook) {
+        backupService.saveNotebook(notebook);
     }
 
     public boolean deleteNote(Integer note_id) {
         boolean res = true;
         note_repo.deleteById(note_id);
+        deleteNoteFromBackup(note_id);
         return res;
+    }
+
+    public void deleteNoteFromBackup(Integer note_id) {
+        backupService.deleteNote(note_id);
     }
 
     public boolean deleteNotebook(Integer notebook_id) {
         boolean res = true;
         notebook_repo.deleteById(notebook_id);
+        deleteNotebookFromBackup(notebook_id);
         return res;
+    }
+
+    public void deleteNotebookFromBackup(Integer notebook_id) {
+        backupService.deleteNotebook(notebook_id);
     }
 
     @Transactional(readOnly = true)
