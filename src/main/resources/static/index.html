@@ -17,19 +17,25 @@
     <link rel="stylesheet" href="css/default.min.css">
 
     <style>
-        /* Premium Monochrome Dark Theme - Pure Blacks & Grays */
+        /* IntelliJ IDEA Darcula & New UI Dark Theme - Low Contrast, Soft Grays & Classic IDE Blue */
         :root {
-            --bg-main: #0a0a0a;
-            --bg-surface: #141414;
-            --bg-hover: #262626;
-            --border-color: #262626;
-            --border-focus: #525252;
-            --text-main: #ededed;
-            --text-muted: #888888;
-            --accent: #ffffff;
-            --btn-primary: #262626;
-            --btn-hover: #404040;
-            --delete-hover: #ff4c4c;
+            --bg-main: #1e1f22;        /* IntelliJ editor background */
+            --bg-surface: #2b2d30;     /* IntelliJ panels/navbar/toolbar */
+            --bg-hover: #2e3238;       /* Subtle tree hover */
+            --bg-active: #2c3b59;      /* IntelliJ soft blue selection */
+            --border-color: #393b40;   /* Muted structural borders */
+            --border-focus: #3d7a99;   /* IntelliJ blue focus ring */
+            --text-main: #bcbec4;      /* Standard reading text (low eye strain) */
+            --text-muted: #6f737a;     /* Comments / inactive icons */
+            --text-active: #ffffff;    /* Selected item text */
+            --accent: #548af7;         /* IntelliJ blue highlight */
+
+            /* Classic IntelliJ (Darcula) Button Blue */
+            --btn-primary: #3574f0;
+            --btn-hover: #2f65ca;
+            --btn-border: #3574f0;
+
+            --delete-hover: #ff5261;   /* Soft red for destructives */
         }
 
         body, html {
@@ -45,7 +51,7 @@
         #app-loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(10, 10, 10, 0.85);
+            background-color: rgba(30, 31, 34, 0.85); /* Matches IntelliJ bg */
             z-index: 9999;
             display: none;
             justify-content: center;
@@ -72,7 +78,6 @@
             display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 20px;
         }
 
-        /* Left Section Wrapper for Navbar to handle visibility toggling */
         .navbar-left-section {
             display: flex; align-items: center; gap: 15px;
         }
@@ -80,28 +85,28 @@
         .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; margin: 0; padding: 0; list-style: none; height: 100%; }
         .navbar-nav > li { margin-left: 5px; display: flex; align-items: center; position: relative; }
         .navbar-inverse .navbar-nav > li > a {
-            color: var(--text-muted) !important;
+            color: var(--text-main) !important;
             display: flex; align-items: center; gap: 8px;
             transition: all 0.2s ease;
             border-radius: 6px; padding: 8px 12px !important;
             text-decoration: none; cursor: pointer;
         }
         .navbar-inverse .navbar-nav > li > a:hover {
-            color: var(--accent) !important; background-color: var(--bg-hover) !important;
+            color: var(--text-active) !important; background-color: var(--bg-hover) !important;
         }
 
-        /* --- Top Navbar Hamburger Toggle (Always visible, handles both expand and collapse) --- */
+        /* --- Top Navbar Hamburger Toggle --- */
         #topbarToggle {
-            background: transparent !important; border: none !important; color: var(--text-muted) !important;
+            background: transparent !important; border: none !important; color: var(--text-main) !important;
             padding: 8px !important; margin: 0; border-radius: 4px; transition: all 0.2s; cursor: pointer;
-            display: flex; /* Always visible */
+            display: flex;
             align-items: center; justify-content: center;
         }
-        #topbarToggle:hover { color: var(--accent) !important; background-color: var(--bg-hover) !important; }
+        #topbarToggle:hover { color: var(--text-active) !important; background-color: var(--bg-hover) !important; }
 
         /* Breadcrumb Alignment */
         .breadcrumb-nav {
-            display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500;
+            display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -133,38 +138,47 @@
         .sidebar-menu { flex-grow: 1; padding: 10px 0; }
         .sidebar-menu ul { list-style: none; padding: 0; margin: 0; }
 
-        /* Level 1 Category */
+        /* Level 1 Category (IntelliJ Style Selection) */
         .folder-item > a {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 20px; color: var(--text-muted) !important;
-            text-decoration: none !important; font-size: 14px; font-weight: 500;
-            transition: all 0.2s ease; border-left: 3px solid transparent; cursor: pointer;
+            padding: 8px 20px; color: var(--text-main) !important;
+            text-decoration: none !important; font-size: 14px;
+            transition: all 0.1s ease; cursor: pointer;
+            margin: 2px 10px; border-radius: 4px; /* IntelliJ rounded selection rows */
         }
-        .folder-item:hover > a, .folder-item.active > a {
-            background-color: var(--bg-hover); color: var(--accent) !important;
+        .folder-item:hover > a {
+            background-color: var(--bg-hover); color: var(--text-active) !important;
         }
-        .folder-item > a .menu-item-content { display: flex; align-items: center; gap: 12px; }
-        .folder-item > a i.fa-folder-open { font-size: 14px; width: 16px; text-align: center; }
+        .folder-item.active > a {
+            background-color: var(--bg-active); color: var(--text-active) !important;
+        }
+        .folder-item > a .menu-item-content { display: flex; align-items: center; gap: 10px; }
+        .folder-item > a i.fa-folder-open { color: var(--text-muted); font-size: 14px; width: 16px; text-align: center; }
+        .folder-item.active > a i.fa-folder-open { color: var(--text-active); }
 
         /* Level 2 Nodes */
-        .sub-menu { background-color: var(--bg-main); }
+        .sub-menu { background-color: var(--bg-surface); padding-bottom: 5px; }
         .sub-menu li > a {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px 10px 45px; color: var(--text-muted) !important;
+            padding: 6px 20px 6px 42px; color: var(--text-main) !important;
             text-decoration: none !important; font-size: 13px;
-            transition: all 0.2s ease; border-left: 3px solid transparent; cursor: pointer;
+            transition: all 0.1s ease; cursor: pointer;
+            margin: 0px 10px; border-radius: 4px;
         }
         .sub-menu li > a .menu-item-content { display: flex; align-items: center; gap: 10px; }
-        .sub-menu li > a i.fa-file-lines { width: 14px; text-align: center; }
-        .sub-menu li:hover > a, .sub-menu li.active > a {
-            background-color: var(--bg-hover); color: var(--accent) !important;
+        .sub-menu li > a i.fa-file-lines { color: var(--text-muted); width: 14px; text-align: center; }
+
+        .sub-menu li:hover > a {
+            background-color: var(--bg-hover); color: var(--text-active) !important;
         }
         .sub-menu li.active > a {
-            border-left: 3px solid var(--accent); padding-left: 42px;
+            background-color: var(--bg-active); color: var(--text-active) !important;
         }
+        .sub-menu li.active > a i.fa-file-lines { color: var(--text-active); }
 
-        .fa-trash { transition: color 0.2s ease; font-size: 14px; }
+        .fa-trash { transition: color 0.2s ease; font-size: 13px; color: var(--text-muted); }
         .fa-trash:hover { color: var(--delete-hover) !important; }
+        .active > a .fa-trash { color: rgba(255,255,255,0.7); }
 
         /* --- Main Content Area --- */
         .main {
@@ -187,8 +201,9 @@
             padding: 30px; border-radius: 8px; max-width: 400px; margin: 0 auto;
             color: var(--text-main) !important; border: 1px solid var(--border-color) !important;
         }
+        .white-popup h4 { color: var(--text-active); }
         .white-popup input[type="text"], .white-popup select {
-            background-color: var(--bg-main) !important; color: var(--text-main) !important;
+            background-color: var(--bg-main) !important; color: var(--text-active) !important;
             border: 1px solid var(--border-color) !important;
             width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 4px;
         }
@@ -198,19 +213,42 @@
 
         /* --- Buttons --- */
         button {
-            background-color: var(--btn-primary) !important; color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important;
-            padding: 8px 16px; border-radius: 4px; font-weight: 500; cursor: pointer; transition: 0.2s ease;
-            display: inline-flex; align-items: center; gap: 8px;
+            background-color: var(--btn-primary) !important;
+            color: #ffffff !important; /* Crisp white text */
+            border: 1px solid var(--btn-border) !important;
+            padding: 6px 14px; /* Slightly tighter padding like IDE buttons */
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 13px; /* Matches standard IDE font sizing */
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             margin: 2px;
         }
-        button:hover { background-color: var(--bg-hover) !important; color: var(--accent) !important; }
+        button:hover {
+            background-color: var(--btn-hover) !important;
+            border-color: var(--btn-hover) !important;
+        }
+
+        /* Ensure secondary buttons (if you add any) don't inherit the bright blue */
+        .btn-secondary {
+            background-color: var(--bg-surface) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-main) !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-hover) !important;
+            color: var(--text-active) !important;
+        }
 
         /* --- Quill Editor UI --- */
         #editor {
             background-color: var(--bg-main) !important; color: var(--text-main) !important;
             border: 1px solid var(--border-color) !important; border-top: none !important;
-            border-radius: 0 0 8px 8px; min-height: calc(100vh - 170px); font-size: 16px;
+            border-radius: 0 0 8px 8px; min-height: calc(100vh - 120px); font-size: 15px;
         }
         .ql-toolbar.ql-snow {
             background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important;
@@ -218,14 +256,15 @@
         }
         .ql-snow .ql-stroke { stroke: var(--text-muted) !important; }
         .ql-snow .ql-fill { fill: var(--text-muted) !important; }
-        .ql-snow .ql-picker { color: var(--text-muted) !important; }
-        button.ql-active .ql-stroke, .ql-snow .ql-picker-label:hover .ql-stroke, .ql-snow .ql-picker-item:hover .ql-stroke { stroke: var(--accent) !important; }
-        button.ql-active .ql-fill, .ql-snow .ql-picker-label:hover .ql-fill, .ql-snow .ql-picker-item:hover .ql-fill { fill: var(--accent) !important; }
+        .ql-snow .ql-picker { color: var(--text-main) !important; font-weight: 500; }
+
+        button.ql-active .ql-stroke, .ql-snow .ql-picker-label:hover .ql-stroke, .ql-snow .ql-picker-item:hover .ql-stroke { stroke: var(--text-active) !important; }
+        button.ql-active .ql-fill, .ql-snow .ql-picker-label:hover .ql-fill, .ql-snow .ql-picker-item:hover .ql-fill { fill: var(--text-active) !important; }
         .ql-snow .ql-picker-options { background-color: var(--bg-surface) !important; border-color: var(--border-color) !important; }
 
         .dropdown-menu { background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important; }
-        .dropdown-menu > li > a { color: var(--text-muted) !important; }
-        .dropdown-menu > li > a:hover { background-color: var(--bg-hover) !important; color: var(--accent) !important; }
+        .dropdown-menu > li > a { color: var(--text-main) !important; }
+        .dropdown-menu > li > a:hover { background-color: var(--bg-active) !important; color: var(--text-active) !important; }
     </style>
 
     <script src="js/jquery-3.4.0.min.js"></script>
@@ -261,8 +300,8 @@
         <div class="navbar-left-section">
             <div class="breadcrumb-nav">
                 <label id="currentNotebook" style="margin: 0;">Notebook</label>
-                <i class="fa fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
-                <label id="notename" style="margin: 0; color: var(--accent);">My Note</label>
+                <i class="fa fa-chevron-right" style="font-size: 11px; color: var(--text-muted);"></i>
+                <label id="notename" style="margin: 0; color: var(--text-main);">My Note</label>
             </div>
         </div>
 
