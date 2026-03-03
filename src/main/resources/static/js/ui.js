@@ -19,11 +19,11 @@ $(document).ready(function () {
 // Utility functions for Loader
 function showLoader(message = "Loading...") {
     $('#loader-text').text(message);
-    $('#app-loader').css('display', 'flex'); // Use flex to keep it centered
+    $('#app-loader').css('display', 'flex');
 }
 
 function hideLoader() {
-    $('#app-loader').fadeOut(200); // Smooth fade out
+    $('#app-loader').fadeOut(200);
 }
 
 function clearPrevSearch() {
@@ -42,7 +42,6 @@ function htmlbodyHeightUpdate() {
         $('html').height(Math.max(height1, height3, height2));
         $('body').height(Math.max(height1, height3, height2));
     }
-
 }
 
 function sideBarInit() {
@@ -60,144 +59,84 @@ function popup_init() {
     $(document).ready(function () {
         $('.mypopup').magnificPopup({
             type: 'inline',
-            midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+            midClick: true
         });
     });
 }
 
-hljs.configure({ // optionally configure hljs
+hljs.configure({
     languages: ['java']
 });
 
 var toolbarOptions = [
     ['bold', 'italic', 'underline', 'code-block'],
     ['link', 'image'],
-    [{
-        'header': 1
-    }, {
-        'header': 2
-    }], // custom button values
-    [{
-        'list': 'ordered'
-    }, {
-        'list': 'bullet'
-    }],
-    [{
-        'indent': '-1'
-    }, {
-        'indent': '+1'
-    }], // outdent/indent
-
-    [{
-        'size': ['small', false, 'large', 'huge']
-    }], // custom dropdown
-    [{
-        'header': [1, 2, 3, 4, 5, 6, false]
-    }],
-
-    [{
-        'color': []
-    }, {
-        'background': []
-    }], // dropdown with defaults from theme
-    [{
-        'font': []
-    }],
-    [{
-        'align': []
-    }],
-
+    [{ 'header': 1 }, { 'header': 2 }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    [{ 'indent': '-1' }, { 'indent': '+1' }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'font': [] }],
+    [{ 'align': [] }],
     ['clean']
-
 ];
 
 var editor = null;
 
 var bindings = {
-
-    code:
-        {
-            key: 'C',
-            shiftKey: null,
-            ctrlKey: true,
-            altKey: true,
-
-            handler: function (range, context) {
-                //console.info("Alt + ctrl + C");
-                editor.formatText(range, 'code', true);
-            }
+    code: {
+        key: 'C',
+        shiftKey: null,
+        ctrlKey: true,
+        altKey: true,
+        handler: function (range, context) {
+            editor.formatText(range, 'code', true);
         }
+    }
 };
-
-// function imageHandler() {
-//     var range = this.editor.getSelection();
-//     var value = prompt('please copy paste the image url here.');
-//
-//     if (value) {
-//         this.editor.insertEmbed(range.index, 'image', value, editor.sources.USER);
-//     }
-// }
 
 function imageHandler() {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
-
     input.click();
-
     input.onchange = () => {
         const file = input.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const base64Image = e.target.result;
-                // Insert the base64 image into the editor
                 const range = editor.getSelection();
                 editor.insertEmbed(range.index, 'image', base64Image);
             };
-            reader.readAsDataURL(file);  // Convert the file to base64
+            reader.readAsDataURL(file);
         }
     };
 }
 
-//$(document).ready()
 $(window).on('load', function () {
-    // 1. Input Validation: Ensure Highlight.js is actually loaded before Quill tries to use it
     if (typeof hljs === 'undefined') {
         console.error("[Error] Highlight.js is not loaded! Syntax highlighting will fail.");
-        // Optional: show a UI notification here
         return;
     }
-
-    // 2. Quill strict requirement: hljs must be attached to the global window object
     window.hljs = hljs;
 
     try {
         editor = new Quill('#editor', {
             theme: 'snow',
             readOnly: false,
-            // Removed the invalid root-level `syntax: true`
-
-            // Note: If imageDrop stops working, it usually belongs inside the `modules` object depending on the plugin version.
-            // I've kept it at the root if that matches your specific plugin's documentation.
             imageDrop: true,
-
             modules: {
-                // Properly scoped syntax module
                 syntax: {
                     highlight: function(text) {
                         try {
-                            // Try to auto-detect
                             let result = hljs.highlightAuto(text, ['java', 'javascript', 'xml', 'css']);
-
-                            // Fallback to Java if relevance score is too low
                             if (result.relevance < 2) {
                                 return hljs.highlight(text, { language: 'java' }).value;
                             }
                             return result.value;
-
                         } catch (e) {
-                            // Error handling: Prevent the editor from locking up if parsing fails
                             console.warn("[Quill Syntax] Highlighting failed, falling back to raw text.", e);
                             return text;
                         }
@@ -215,42 +154,45 @@ $(window).on('load', function () {
                 }
             }
         });
-
         console.log("[Debug] Quill Editor initialized successfully with Java-biased syntax highlighting.");
-
     } catch (error) {
         console.error("[Error] Failed to initialize Quill editor:", error);
     }
 });
 
+// UPDATED TEMPLATE: Modern flexbox layout matching the dark mode CSS
 var menu_template = `
-        <li data-toggle="collapse" data-target="#nb_{notebook_id}" class="collapsed active">
-            <a>
-                <i class="fa fa-sticky-note fa-lg"></i> {notebook_name} 
-            </a>
-            <a>
-                <i onclick="deleteNotebook({notebook_id})" class="fa fa-trash fa-lg btn pull-right" style="margin-top:5px"></i>
-            </a>
-        </li>
-        <ul class="sub-menu collapse" id="nb_{notebook_id}">
-            {menuitems}
-        </ul>
+    <li data-toggle="collapse" data-target="#nb_{notebook_id}" class="collapsed folder-item">
+        <a>
+            <div class="menu-item-content">
+                <i class="fa fa-folder-open"></i>
+                <span>{notebook_name}</span>
+            </div>
+            <i onclick="deleteNotebook({notebook_id}); event.stopPropagation();" class="fa fa-trash btn" style="padding: 0; background: transparent; color: var(--text-muted); border: none;"></i>
+        </a>
+    </li>
+    <ul class="sub-menu collapse" id="nb_{notebook_id}">
+        {menuitems}
+    </ul>
 `;
 
+// UPDATED TEMPLATE: Note child items with modern flexbox
 var menu_item_template = `
-        <li onclick="$('#menu-content li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
-            <a id="n_{note_id}">{note_name}</a>
-            <a style="position: absolute; right:0px; min-width:0px; padding-right: 0px;">
-                <i onclick="deleteNote({note_id})" class="fa fa-trash fa-lg btn" style="margin-top:5px"></i>
-            </a>
-        </li>
+    <li onclick="$('.sub-menu li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
+        <a id="n_{note_id}">
+            <div class="menu-item-content">
+                <i class="fa fa-file-lines"></i>
+                <span>{note_name}</span>
+            </div>
+            <i onclick="deleteNote({note_id}); event.stopPropagation();" class="fa fa-trash btn" style="padding: 0; background: transparent; color: var(--text-muted); border: none;"></i>
+        </a>
+    </li>
 `;
 
 var mymenu = "";
 
 function populateNoteBooks() {
     $('#menu-content').html("");
-
     $('.mynotebooks').html('');
 
     for (let value of notebook_meta_map.values()) {

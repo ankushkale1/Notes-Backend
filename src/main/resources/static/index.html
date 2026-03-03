@@ -1,7 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notebook App</title>
+
     <link href="css/noty.css" rel="stylesheet">
     <link href="css/topnav.css" rel="stylesheet">
     <link href="css/all.min.css" rel="stylesheet">
@@ -13,157 +17,165 @@
     <link rel="stylesheet" href="css/default.min.css">
 
     <style>
-        /* Make the Top Navbar Sticky */
-        .navbar-primary {
-            position: sticky !important;
-            top: 0;
-            z-index: 1050 !important; /* Must be higher than the Quill toolbar (1000) */
-            margin-bottom: 0 !important; /* Removes default Bootstrap spacing below the nav */
-            width: 100%;
-        }
-
-        .ql-toolbar.ql-snow {
-            position: sticky;
-            top: 50px; /* Adjust this value if your top nav overlaps the toolbar */
-            z-index: 1000;
-            background-color: #fff; /* Ensures the text behind it doesn't bleed through */
-            border-top: 1px solid #ccc;
-        }
-
-        /* Global Loader Overlay */
-        #app-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(18, 18, 18, 0.85); /* Dark semi-transparent background */
-            z-index: 9999; /* Ensures it stays on top of everything including modals */
-            display: none; /* Hidden by default */
-            justify-content: center;
-            align-items: center;
-            color: #e0e0e0;
-        }
-
-        .loader-content {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-    </style>
-
-    <style>
-
         /* Premium Monochrome Dark Theme - Pure Blacks & Grays */
         :root {
-            --bg-main: #0a0a0a;        /* Pitch black background */
-            --bg-surface: #141414;     /* Slightly elevated charcoal for nav/sidebar */
-            --bg-hover: #262626;       /* Hover shade */
-            --border-color: #262626;   /* Subtle structural borders */
-            --border-focus: #525252;   /* Gray focus ring */
-            --text-main: #ededed;      /* Crisp white for readability */
-            --text-muted: #888888;     /* Gray for inactive icons/text */
-            --accent: #ffffff;         /* Pure white for active states */
-            --btn-primary: #262626;    /* Dark button */
-            --btn-hover: #404040;      /* Lighter dark button hover */
+            --bg-main: #0a0a0a;
+            --bg-surface: #141414;
+            --bg-hover: #262626;
+            --border-color: #262626;
+            --border-focus: #525252;
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --accent: #ffffff;
+            --btn-primary: #262626;
+            --btn-hover: #404040;
+            --delete-hover: #ff4c4c;
         }
 
         body, html {
             background-color: var(--bg-main) !important;
             color: var(--text-main) !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
+
+        /* --- Global Loader Overlay --- */
+        #app-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(10, 10, 10, 0.85);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+        .loader-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; }
 
         /* --- Top Navbar --- */
         .navbar-primary {
             background-color: var(--bg-surface) !important;
             border-bottom: 1px solid var(--border-color) !important;
-            position: sticky !important;
-            top: 0;
+            position: fixed !important;
+            top: 0; left: 0;
             z-index: 1050 !important;
-            margin-bottom: 0 !important;
+            margin: 0 !important;
             width: 100%;
+            height: 50px !important;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
         }
-        .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; margin: 0; }
-        .navbar-nav > li { float: none !important; margin-left: 5px; }
-        .navbar-right { float: right !important; margin-right: 20px; }
+        .navbar-primary .container-fluid {
+            display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 20px;
+        }
+        .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; margin: 0; padding: 0; list-style: none; height: 100%; }
+        .navbar-nav > li { margin-left: 5px; display: flex; align-items: center; position: relative; }
         .navbar-inverse .navbar-nav > li > a {
             color: var(--text-muted) !important;
             display: flex; align-items: center; gap: 8px;
             transition: all 0.2s ease;
-            border-radius: 6px; padding: 10px 15px !important;
+            border-radius: 6px; padding: 8px 12px !important;
+            text-decoration: none; cursor: pointer;
         }
         .navbar-inverse .navbar-nav > li > a:hover {
-            color: var(--accent) !important;
-            background-color: var(--bg-hover) !important;
+            color: var(--accent) !important; background-color: var(--bg-hover) !important;
         }
 
-        /* --- Modern Sidebar --- */
+        /* Sidebar Toggle Button in Nav */
+        #sidebarToggle {
+            background: transparent !important; border: none !important; color: var(--text-muted) !important;
+            padding: 8px !important; margin: 0; border-radius: 4px; transition: all 0.2s; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #sidebarToggle:hover { color: var(--accent) !important; background-color: var(--bg-hover) !important; }
+
+        /* Dynamic Hamburger Icon - Changes to an expand icon when collapsed */
+        body.sidebar-collapsed #sidebarToggle i::before {
+            content: "\f03c"; /* fa-indent */
+        }
+
+        /* --- Modern Sidebar Architecture --- */
         .modern-sidebar {
             position: fixed;
-            top: 51px; /* Height of the top navbar */
-            left: 0;
+            top: 50px; left: 0;
             width: 260px;
-            height: calc(100vh - 51px);
+            height: calc(100vh - 50px);
             background-color: var(--bg-surface);
             border-right: 1px solid var(--border-color);
-            overflow-y: auto;
-            z-index: 1040;
+            overflow-y: auto; z-index: 1040;
+            display: flex; flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* Sidebar Collapsed State */
+        body.sidebar-collapsed .modern-sidebar {
+            transform: translateX(-260px);
+        }
+
         .sidebar-header {
-            padding: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 15px 20px; font-size: 13px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
         }
-        .sidebar-menu { padding: 10px 0; }
+
+        #sidebarClose {
+            cursor: pointer; padding: 5px; transition: color 0.2s; font-size: 14px;
+        }
+        #sidebarClose:hover { color: var(--accent); }
+
+        .sidebar-menu { flex-grow: 1; padding: 10px 0; }
         .sidebar-menu ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar-menu a {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            color: var(--text-muted);
-            text-decoration: none !important;
-            font-size: 15px;
-            transition: all 0.2s ease;
-        }
-        .sidebar-menu a .menu-item-content { display: flex; align-items: center; gap: 12px; }
-        .sidebar-menu a i { font-size: 14px; width: 16px; text-align: center; }
 
-        /* Sidebar Hover & Active States */
-        .sidebar-menu a:hover {
-            background-color: var(--bg-hover);
-            color: var(--text-main);
+        /* Level 1 Category */
+        .folder-item > a {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; color: var(--text-muted) !important;
+            text-decoration: none !important; font-size: 14px; font-weight: 500;
+            transition: all 0.2s ease; border-left: 3px solid transparent; cursor: pointer;
         }
-        .sidebar-menu li.active > a {
-            color: var(--accent);
-            font-weight: 600;
+        .folder-item:hover > a, .folder-item.active > a {
+            background-color: var(--bg-hover); color: var(--accent) !important;
         }
-        .folder-item.active > a { border-left: 3px solid var(--accent); }
+        .folder-item > a .menu-item-content { display: flex; align-items: center; gap: 12px; }
+        .folder-item > a i.fa-folder-open { font-size: 14px; width: 16px; text-align: center; }
 
-        /* Sub-menu styling */
+        /* Level 2 Nodes */
         .sub-menu { background-color: var(--bg-main); }
-        .sub-menu a { padding: 8px 20px 8px 45px; font-size: 14px; }
-        .sub-menu li.active > a {
-            background-color: var(--bg-hover);
-            color: var(--accent);
-            border-left: 3px solid var(--accent);
+        .sub-menu li > a {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 20px 10px 45px; color: var(--text-muted) !important;
+            text-decoration: none !important; font-size: 13px;
+            transition: all 0.2s ease; border-left: 3px solid transparent; cursor: pointer;
         }
+        .sub-menu li > a .menu-item-content { display: flex; align-items: center; gap: 10px; }
+        .sub-menu li > a i.fa-file-lines { width: 14px; text-align: center; }
+        .sub-menu li:hover > a, .sub-menu li.active > a {
+            background-color: var(--bg-hover); color: var(--accent) !important;
+        }
+        .sub-menu li.active > a {
+            border-left: 3px solid var(--accent); padding-left: 42px;
+        }
+
+        .fa-trash { transition: color 0.2s ease; font-size: 14px; }
+        .fa-trash:hover { color: var(--delete-hover) !important; }
 
         /* --- Main Content Area --- */
         .main {
-            margin-left: 260px; /* Offsets content past the sidebar */
+            margin-top: 50px;
+            margin-left: 260px;
             padding: 30px;
-            transition: all 0.3s;
+            min-height: calc(100vh - 50px);
+            box-sizing: border-box;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Main Content Expanded State */
+        body.sidebar-collapsed .main {
+            margin-left: 0;
         }
 
         /* --- Modals & Popups --- */
@@ -173,8 +185,7 @@
             color: var(--text-main) !important; border: 1px solid var(--border-color) !important;
         }
         .white-popup input[type="text"], .white-popup select {
-            background-color: var(--bg-main) !important;
-            color: var(--text-main) !important;
+            background-color: var(--bg-main) !important; color: var(--text-main) !important;
             border: 1px solid var(--border-color) !important;
             width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 4px;
         }
@@ -184,25 +195,22 @@
 
         /* --- Buttons --- */
         button {
-            background-color: var(--btn-primary) !important;
-            color: var(--text-main) !important;
+            background-color: var(--btn-primary) !important; color: var(--text-main) !important;
             border: 1px solid var(--border-color) !important;
-            margin: 2px;
             padding: 8px 16px; border-radius: 4px; font-weight: 500; cursor: pointer; transition: 0.2s ease;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        button:hover { background-color: var(--btn-hover) !important; color: var(--accent) !important; }
+        button:hover { background-color: var(--bg-hover) !important; color: var(--accent) !important; }
 
         /* --- Quill Editor UI --- */
         #editor {
-            background-color: var(--bg-main) !important;
-            color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important;
-            border-top: none !important; border-radius: 0 0 8px 8px; min-height: 70vh;
+            background-color: var(--bg-main) !important; color: var(--text-main) !important;
+            border: 1px solid var(--border-color) !important; border-top: none !important;
+            border-radius: 0 0 8px 8px; min-height: calc(100vh - 170px); font-size: 16px;
         }
         .ql-toolbar.ql-snow {
-            background-color: var(--bg-surface) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: 8px 8px 0 0; position: sticky; top: 51px; z-index: 1000; padding: 12px !important;
+            background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important;
+            border-radius: 8px 8px 0 0; position: sticky; top: 50px; z-index: 1000; padding: 10px !important;
         }
         .ql-snow .ql-stroke { stroke: var(--text-muted) !important; }
         .ql-snow .ql-fill { fill: var(--text-muted) !important; }
@@ -211,11 +219,14 @@
         button.ql-active .ql-fill, .ql-snow .ql-picker-label:hover .ql-fill, .ql-snow .ql-picker-item:hover .ql-fill { fill: var(--accent) !important; }
         .ql-snow .ql-picker-options { background-color: var(--bg-surface) !important; border-color: var(--border-color) !important; }
 
+        .dropdown-menu { background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important; }
+        .dropdown-menu > li > a { color: var(--text-muted) !important; }
+        .dropdown-menu > li > a:hover { background-color: var(--bg-hover) !important; color: var(--accent) !important; }
     </style>
+
     <script src="js/jquery-3.4.0.min.js"></script>
     <script src="js/highlight.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 
     <script src="js/ui.js"></script>
@@ -230,165 +241,75 @@
 </head>
 
 <body>
+
 <div id="app-loader">
     <div class="loader-content">
         <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
         <h4 id="loader-text">Loading...</h4>
     </div>
 </div>
-<nav class="navbar navbar-inverse navbar-primary" style="margin-left: 30px;">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+
+<nav class="navbar navbar-inverse navbar-primary">
+    <div class="container-fluid">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button type="button" id="sidebarToggle" title="Toggle Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')">
+                <i class="fa fa-bars fa-lg"></i>
+            </button>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500;">
+                <label id="currentNotebook" style="margin: 0;">Notebook</label>
+                <i class="fa fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
+                <label id="notename" style="margin: 0; color: var(--accent);">My Note</label>
+            </div>
+        </div>
+
         <ul class="nav navbar-nav navbar-right">
-
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" style="font-size: 18px;" role="button"
-                   aria-haspopup="true" aria-expanded="false">
-                    <label id="currentNotebook"></label>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" style="font-size: 18px;" role="button"
-                   aria-haspopup="true" aria-expanded="false">
-                    <span class="fa fa-arrow-right"></span>
-                </a>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" style="font-size: 18px;" role="button"
-                   aria-haspopup="true" aria-expanded="false">
-                    <label id="notename">My Note</label>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a aria-label="Refresh" data-balloon-pos="down" style="font-size: 18px;" onclick="getNoteBookMeta()"
-                   class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                   aria-expanded="false">
-                    <i class="fa fa-refresh" role="presentation"></i>
-                    <span class="small-scn-menu-text">Refresh</span>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a aria-label="New Note" data-balloon-pos="down" style="font-size: 18px;" href="#NewNote"
-                   class="dropdown-toggle mypopup" data-toggle="dropdown" role="button" aria-haspopup="true"
-                   aria-expanded="false">
-                    <i class="fa fa-sticky-note" role="presentation"></i><span
-                        class="small-scn-menu-text">New Note</span>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a href="#NewBook" aria-label="New Notebook" data-balloon-pos="down" style="font-size: 18px;"
-                   class="dropdown-toggle mypopup" data-toggle="dropdown" role="button" aria-haspopup="true"
-                   aria-expanded="false">
-                    <i class="fa fa-book" role="presentation"></i><span class="small-scn-menu-text">New Notebook</span>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a onclick="addUpdateNote()" aria-label="Save" data-balloon-pos="down" style="font-size: 18px;"
-                   class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                   aria-expanded="false">
-                    <i class="fa fa-save" role="presentation"></i><span class="small-scn-menu-text">Save</span>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a href="#search" aria-label="Search" data-balloon-pos="down" style="font-size: 18px;"
-                   onclick="clearPrevSearch()" class="dropdown-toggle mypopup" data-toggle="dropdown" role="button"
-                   aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-search" role="presentation"></i><span class="small-scn-menu-text">Search</span>
-                </a>
-            </li>
+            <li><a aria-label="Refresh" data-balloon-pos="down" onclick="getNoteBookMeta()" role="button"><i class="fa fa-refresh"></i> <span class="hidden-xs">Refresh</span></a></li>
+            <li><a aria-label="New Note" data-balloon-pos="down" href="#NewNote" class="mypopup" role="button"><i class="fa fa-file-circle-plus"></i> <span class="hidden-xs">New Note</span></a></li>
+            <li><a aria-label="New Notebook" data-balloon-pos="down" href="#NewBook" class="mypopup" role="button"><i class="fa fa-folder-plus"></i> <span class="hidden-xs">New Notebook</span></a></li>
+            <li><a aria-label="Save" data-balloon-pos="down" onclick="addUpdateNote()" role="button"><i class="fa fa-save"></i> <span class="hidden-xs">Save</span></a></li>
+            <li><a aria-label="Export to Markdown" data-balloon-pos="down" onclick="exportToMarkdown()" role="button"><i class="fa-solid fa-file-export"></i> <span class="hidden-xs">Export</span></a></li>
+            <li><a aria-label="Search" data-balloon-pos="down" href="#search" onclick="clearPrevSearch()" class="mypopup" role="button"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></a></li>
         </ul>
     </div>
 </nav>
 
-<aside>
-    <nav class="navbar navbar-inverse sidebar navbar-fixed-top" role="navigation">
-        <div class="nav-side-menu">
-            <div class="brand">Notebooks</div>
-            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
-
-            <div class="menu-list">
-
-                <ul id="menu-content" class="menu-content collapse out">
-                    <li data-toggle="collapse" data-target="#products" class="collapsed active">
-                        <a href="#"><i class="fa fa-sticky-note fa-lg"></i> Notes
-                            <i class="fa fa-remove fa-lg btn pull-right" style="margin-top:5px"></i>
-                        </a>
-                    </li>
-                    <ul class="sub-menu collapse" id="products">
-                        <li class="active"><a href="#">CSS3 Animation</a></li>
-                        <li><a href="#">General</a></li>
-                        <li><a href="#">Buttons</a></li>
-                        <li><a href="#">Tabs & Accordions</a></li>
-                        <li><a href="#">Typography</a></li>
-                        <li><a href="#">FontAwesome</a></li>
-                        <li><a href="#">Slider</a></li>
-                        <li><a href="#">Panels</a></li>
-                        <li><a href="#">Widgets</a></li>
-                        <li><a href="#">Bootstrap Model</a></li>
-                    </ul>
-                </ul>
-            </div>
+<aside class="modern-sidebar">
+    <div class="sidebar-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa fa-book-journal-whills"></i> Library
         </div>
-    </nav>
+        <i class="fa fa-chevron-left" id="sidebarClose" title="Collapse Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')"></i>
+    </div>
+    <div class="sidebar-menu">
+        <ul id="menu-content" class="collapse in d-md-block"></ul>
+    </div>
 </aside>
 
-<div>
+<div style="display: none;">
     <div id="NewBook" class="white-popup mfp-hide">
+        <h4 style="margin-top: 0; margin-bottom: 20px;">Create Notebook</h4>
         <input type="text" name="book" placeholder="Notebook Name"/>
-        <select class="mynotebooks" style="color: black">
-            <option>Notebook 1</option>
-            <option>Notebook 2</option>
-            <option>Notebook 3</option>
-        </select>
-        <button onclick="addNotebook($('[name=\'book\']').val(),$('#NewBook .mynotebooks').find(':selected').val())">
-            Create
-        </button>
+        <select class="mynotebooks"></select>
+        <button onclick="addNotebook($('[name=\'book\']').val(),$('#NewBook .mynotebooks').find(':selected').val())" style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create</button>
     </div>
 
     <div id="search" class="white-popup mfp-hide">
-        <input type="text" name="stxt" placeholder="Type to search" onkeypress="search()"/>
-        <div id="search-content">
-
-        </div>
+        <h4 style="margin-top: 0; margin-bottom: 20px;">Search Notes</h4>
+        <input type="text" name="stxt" placeholder="Type to search..." onkeypress="search()"/>
+        <div id="search-content"></div>
     </div>
 
     <div id="NewNote" class="white-popup mfp-hide">
+        <h4 style="margin-top: 0; margin-bottom: 20px;">Create Note</h4>
         <input type="text" name="note" placeholder="Note Name"/>
-        <select class="mynotebooks" style="color: black">
-            <option>Notebook 1</option>
-            <option>Notebook 2</option>
-            <option>Notebook 3</option>
-        </select>
-        <button onclick="addUpdateNote($('[name=\'note\']').val(),$('#NewNote .mynotebooks').find(':selected').val())">
-            Create
-        </button>
+        <select class="mynotebooks"></select>
+        <button onclick="addUpdateNote($('[name=\'note\']').val(),$('#NewNote .mynotebooks').find(':selected').val())" style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create</button>
     </div>
 </div>
 
-<button onclick="exportToMarkdown()" style="margin: 1rem; float: right;">Export to Markdown
-</button>
-
 <div class="main">
-    <div>
-        <div id="editor" style="font-size: 20px;">
-            <p>Hello World!</p>
-        </div>
-    </div>
+    <div id="editor"><p>Start typing your note here...</p></div>
 </div>
 
 </body>
-
 </html>
