@@ -162,25 +162,65 @@ function imageHandler() {
 
 //$(document).ready()
 $(window).on('load', function () {
-    editor = new Quill('#editor', {
-        syntax: true,
-        modules: {
-            //toolbar: toolbarOptions,
-            toolbar: {
-                container: toolbarOptions,
-                handlers: {
-                    image: imageHandler
+    // 1. Input Validation: Ensure Highlight.js is actually loaded before Quill tries to use it
+    if (typeof hljs === 'undefined') {
+        console.error("[Error] Highlight.js is not loaded! Syntax highlighting will fail.");
+        // Optional: show a UI notification here
+        return;
+    }
+
+    // 2. Quill strict requirement: hljs must be attached to the global window object
+    window.hljs = hljs;
+
+    try {
+        editor = new Quill('#editor', {
+            theme: 'snow',
+            readOnly: false,
+            // Removed the invalid root-level `syntax: true`
+
+            // Note: If imageDrop stops working, it usually belongs inside the `modules` object depending on the plugin version.
+            // I've kept it at the root if that matches your specific plugin's documentation.
+            imageDrop: true,
+
+            modules: {
+                // Properly scoped syntax module
+                syntax: {
+                    highlight: function(text) {
+                        try {
+                            // Try to auto-detect
+                            let result = hljs.highlightAuto(text, ['java', 'javascript', 'xml', 'css']);
+
+                            // Fallback to Java if relevance score is too low
+                            if (result.relevance < 2) {
+                                return hljs.highlight(text, { language: 'java' }).value;
+                            }
+                            return result.value;
+
+                        } catch (e) {
+                            // Error handling: Prevent the editor from locking up if parsing fails
+                            console.warn("[Quill Syntax] Highlighting failed, falling back to raw text.", e);
+                            return text;
+                        }
+                    }
+                },
+                toolbar: {
+                    container: toolbarOptions,
+                    handlers: {
+                        image: imageHandler
+                    }
+                },
+                magicUrl: true,
+                keyboard: {
+                    bindings: bindings
                 }
-            },
-            magicUrl: true,
-            keyboard: {
-                bindings: bindings
-            },
-        },
-        theme: 'snow',
-        imageDrop: true,
-        readOnly: false
-    });
+            }
+        });
+
+        console.log("[Debug] Quill Editor initialized successfully with Java-biased syntax highlighting.");
+
+    } catch (error) {
+        console.error("[Error] Failed to initialize Quill editor:", error);
+    }
 });
 
 var menu_template = `

@@ -13,6 +13,15 @@
     <link rel="stylesheet" href="css/default.min.css">
 
     <style>
+        /* Make the Top Navbar Sticky */
+        .navbar-primary {
+            position: sticky !important;
+            top: 0;
+            z-index: 1050 !important; /* Must be higher than the Quill toolbar (1000) */
+            margin-bottom: 0 !important; /* Removes default Bootstrap spacing below the nav */
+            width: 100%;
+        }
+
         .ql-toolbar.ql-snow {
             position: sticky;
             top: 50px; /* Adjust this value if your top nav overlaps the toolbar */
