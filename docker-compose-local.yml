@@ -19,18 +19,20 @@ services:
       - "3306:3306"
     volumes:
       - ./my-mysql.cnf:/etc/mysql/conf.d/my-mysql.cnf
-      - ./dumps/2023_05_14_1684082112/2023_05_14_1684082112.sql:/docker-entrypoint-initdb.d/init.sql
+      # important dont remove below line
+      - ./mysql-data:/var/lib/mysql #if we dont have persistent volume or local folder mapping then when we say docker compose down data is gone forever
+      #- ./dumps/2023_05_14_1684082112/2023_05_14_1684082112.sql:/docker-entrypoint-initdb.d/init.sql
 
-  portainer:
-    container_name: portainer_notes
-    image: portainer/portainer-ce:sts
-    command: -H unix:///var/run/docker.sock
-    restart: always
-    ports:
-      - 9000:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+#  portainer:
+#    container_name: portainer_notes
+#    image: portainer/portainer-ce:sts
+#    command: -H unix:///var/run/docker.sock
+#    restart: always
+#    ports:
+#      - 9000:9000
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - portainer_data:/data
 
 volumes:
   portainer_data:
