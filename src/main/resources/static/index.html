@@ -71,6 +71,12 @@
         .navbar-primary .container-fluid {
             display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 20px;
         }
+
+        /* Left Section Wrapper for Navbar to handle visibility toggling */
+        .navbar-left-section {
+            display: flex; align-items: center; gap: 15px;
+        }
+
         .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; margin: 0; padding: 0; list-style: none; height: 100%; }
         .navbar-nav > li { margin-left: 5px; display: flex; align-items: center; position: relative; }
         .navbar-inverse .navbar-nav > li > a {
@@ -84,17 +90,19 @@
             color: var(--accent) !important; background-color: var(--bg-hover) !important;
         }
 
-        /* Sidebar Toggle Button in Nav */
-        #sidebarToggle {
+        /* --- Top Navbar Hamburger Toggle (Always visible, handles both expand and collapse) --- */
+        #topbarToggle {
             background: transparent !important; border: none !important; color: var(--text-muted) !important;
             padding: 8px !important; margin: 0; border-radius: 4px; transition: all 0.2s; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            display: flex; /* Always visible */
+            align-items: center; justify-content: center;
         }
-        #sidebarToggle:hover { color: var(--accent) !important; background-color: var(--bg-hover) !important; }
+        #topbarToggle:hover { color: var(--accent) !important; background-color: var(--bg-hover) !important; }
 
-        /* Dynamic Hamburger Icon - Changes to an expand icon when collapsed */
-        body.sidebar-collapsed #sidebarToggle i::before {
-            content: "\f03c"; /* fa-indent */
+        /* Breadcrumb Alignment */
+        .breadcrumb-nav {
+            display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* --- Modern Sidebar Architecture --- */
@@ -121,11 +129,6 @@
             border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
         }
-
-        #sidebarClose {
-            cursor: pointer; padding: 5px; transition: color 0.2s; font-size: 14px;
-        }
-        #sidebarClose:hover { color: var(--accent); }
 
         .sidebar-menu { flex-grow: 1; padding: 10px 0; }
         .sidebar-menu ul { list-style: none; padding: 0; margin: 0; }
@@ -199,6 +202,7 @@
             border: 1px solid var(--border-color) !important;
             padding: 8px 16px; border-radius: 4px; font-weight: 500; cursor: pointer; transition: 0.2s ease;
             display: inline-flex; align-items: center; gap: 8px;
+            margin: 2px;
         }
         button:hover { background-color: var(--bg-hover) !important; color: var(--accent) !important; }
 
@@ -250,12 +254,12 @@
 </div>
 
 <nav class="navbar navbar-inverse navbar-primary">
+    <button type="button" id="topbarToggle" title="Toggle Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')">
+        <i class="fa fa-bars fa-lg"></i>
+    </button>
     <div class="container-fluid">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <button type="button" id="sidebarToggle" title="Toggle Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')">
-                <i class="fa fa-bars fa-lg"></i>
-            </button>
-            <div style="display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 500;">
+        <div class="navbar-left-section">
+            <div class="breadcrumb-nav">
                 <label id="currentNotebook" style="margin: 0;">Notebook</label>
                 <i class="fa fa-chevron-right" style="font-size: 12px; color: var(--text-muted);"></i>
                 <label id="notename" style="margin: 0; color: var(--accent);">My Note</label>
@@ -278,7 +282,6 @@
         <div style="display: flex; align-items: center; gap: 10px;">
             <i class="fa fa-book-journal-whills"></i> Library
         </div>
-        <i class="fa fa-chevron-left" id="sidebarClose" title="Collapse Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')"></i>
     </div>
     <div class="sidebar-menu">
         <ul id="menu-content" class="collapse in d-md-block"></ul>
