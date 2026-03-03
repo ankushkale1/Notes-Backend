@@ -2,24 +2,55 @@
 
 <head>
     <meta charset="utf-8"/>
-    <!--link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"-->
     <link href="css/noty.css" rel="stylesheet">
     <link href="css/topnav.css" rel="stylesheet">
     <link href="css/all.min.css" rel="stylesheet">
-    <link href="css/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <link href="css/magnific-popup.css" rel="stylesheet">
     <link href="css/page.css" rel="stylesheet">
     <link rel="stylesheet" href="css/balloon.min.css">
     <link rel="stylesheet" href="css/default.min.css">
 
+    <style>
+        .ql-toolbar.ql-snow {
+            position: sticky;
+            top: 50px; /* Adjust this value if your top nav overlaps the toolbar */
+            z-index: 1000;
+            background-color: #fff; /* Ensures the text behind it doesn't bleed through */
+            border-top: 1px solid #ccc;
+        }
+
+        /* Global Loader Overlay */
+        #app-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18, 18, 18, 0.85); /* Dark semi-transparent background */
+            z-index: 9999; /* Ensures it stays on top of everything including modals */
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            color: #e0e0e0;
+        }
+
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
+
     <script src="js/jquery-3.4.0.min.js"></script>
     <script src="js/highlight.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- Include the Quill library -->
-    <!--script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script-->
-    <script src="js/quill.js"></script>
-    <!-- Include the highlight.js library -->
+
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
     <script src="js/ui.js"></script>
     <script src="js/page.js"></script>
     <script src="js/topbar.js"></script>
@@ -28,12 +59,16 @@
     <script src="js/image-drop.min.js"></script>
     <script src="js/magic_url.js"></script>
     <script src="js/noty.min.js"></script>
-    <!--    <script src="js/tailwind-3.4.5.js"></script>-->
-    <!-- Turndown CDN -->
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.1/dist/turndown.min.js"></script>
 </head>
 
 <body>
+<div id="app-loader">
+    <div class="loader-content">
+        <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+        <h4 id="loader-text">Loading...</h4>
+    </div>
+</div>
 <nav class="navbar navbar-inverse navbar-primary" style="margin-left: 30px;">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -111,7 +146,6 @@
     </div>
 </nav>
 
-<!--nav sidebar -->
 <aside>
     <nav class="navbar navbar-inverse sidebar navbar-fixed-top" role="navigation">
         <div class="nav-side-menu">
@@ -121,12 +155,6 @@
             <div class="menu-list">
 
                 <ul id="menu-content" class="menu-content collapse out">
-                    <!--li>
-                      <a href="#">
-                        <i class="fa fa-dashboard fa-lg"></i> Dashboard
-                      </a>
-                    </li-->
-
                     <li data-toggle="collapse" data-target="#products" class="collapsed active">
                         <a href="#"><i class="fa fa-sticky-note fa-lg"></i> Notes
                             <i class="fa fa-remove fa-lg btn pull-right" style="margin-top:5px"></i>
@@ -183,7 +211,6 @@
     </div>
 </div>
 
-<!-- Button to Export to Markdown -->
 <button onclick="exportToMarkdown()" style="margin: 1rem; float: right;">Export to Markdown
 </button>
 

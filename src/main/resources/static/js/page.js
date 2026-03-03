@@ -32,7 +32,7 @@ function checkUnsavedThings() {
 
 function getNote(noteid) {
     //console.log(editor.container.innerHTML);
-
+    showLoader("Opening note...");
     checkUnsavedThings();
 
     $.ajax({
@@ -74,6 +74,9 @@ function getNote(noteid) {
             showNotification('Error while fetching Note..', NOTIFICATION_TYPE.ERROR);
             console.info(res + " " + statuscode);
         },
+        complete: function() {
+            hideLoader();
+        }
     });
 }
 
@@ -104,6 +107,7 @@ function showNotification(ntext, ntype) {
 }*/
 
 function getNoteBookMeta() {
+    showLoader("Loading your notebooks...");
     $.ajax({
         type: "GET",
         url: SERVER_URLS.GET_NOTEBOOKS,
@@ -120,6 +124,10 @@ function getNoteBookMeta() {
             console.info(res + " " + statuscode);
             showNotification('Error while fetching Notebooks..', NOTIFICATION_TYPE.ERROR);
         },
+        complete: function() {
+            // ALWAYS hides the loader, even on error
+            hideLoader();
+        }
     });
 }
 
@@ -169,7 +177,7 @@ function getPlainContent() {
 
 function addUpdateNote(notename, notebook) {
     //console.log(editor.container.innerHTML);
-
+    showLoader("Saving changes...");
     var note = null;
 
     if (typeof notename == 'undefined') //update existing
@@ -199,6 +207,9 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while updating a note', NOTIFICATION_TYPE.ERROR);
             },
+            complete: function() {
+                hideLoader();
+            }
         });
     } else {
         checkUnsavedThings();
@@ -234,6 +245,9 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while adding Note', NOTIFICATION_TYPE.ERROR);
             },
+            complete: function() {
+                hideLoader();
+            }
         });
 
         populateNoteBooks();

@@ -16,6 +16,16 @@ $(document).ready(function () {
     });
 });
 
+// Utility functions for Loader
+function showLoader(message = "Loading...") {
+    $('#loader-text').text(message);
+    $('#app-loader').css('display', 'flex'); // Use flex to keep it centered
+}
+
+function hideLoader() {
+    $('#app-loader').fadeOut(200); // Smooth fade out
+}
+
 function clearPrevSearch() {
     $('#search-content').html('');
     $('[name="stxt"]').val("");
