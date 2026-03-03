@@ -1,12 +1,38 @@
 [mysqld]
+# --- Your Original Project Settings ---
+bind-address            = 0.0.0.0
+max_allowed_packet      = 128M
+lower_case_table_names  = 1
+
 #slow-query-log = 1
 #slow-query-log-file = /bitnami/mysql/data/mysql-slow-query.log
 #long_query_time = 1
 #log-queries-not-using-indexes
 #log-error = /bitnami/mysql/data/mysql-error.log
 
-# Accept connections from any IP address
-bind-address = 0.0.0.0
-max_allowed_packet=128M
-lower_case_table_names = 1
-max_connections = 100
+# --- MySQL 8.x Memory Tuning (High Impact) ---
+# Disable the heavy monitoring schema (Saves 150MB - 200MB)
+performance_schema = OFF
+
+# Limit the data/index cache (Saves 100MB+)
+innodb_buffer_pool_size = 32M
+
+# Reduce the transaction log buffer
+innodb_log_buffer_size  = 1M
+
+# --- Per-Thread Memory Limits ---
+# Limit active connections to save stack RAM
+max_connections         = 50
+key_buffer_size         = 8M
+thread_cache_size       = 0
+
+# --- Advanced "Thin" Tuning ---
+# Disable the event scheduler if you don't use timed DB tasks
+event_scheduler         = OFF
+
+# Lower the internal temporary table size
+tmp_table_size          = 1M
+max_heap_table_size     = 1M
+
+# Disable binary logging if you don't need point-in-time recovery (Optional)
+# skip-log-bin
