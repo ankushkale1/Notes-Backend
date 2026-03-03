@@ -21,7 +21,7 @@ services:
       - ./my-mysql.cnf:/etc/mysql/conf.d/my-mysql.cnf
       # important dont remove below line
       - ./mysql-data:/var/lib/mysql #if we dont have persistent volume or local folder mapping then when we say docker compose down data is gone forever
-      #- ./dumps/2023_05_14_1684082112/2023_05_14_1684082112.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./dumps/2026_02_28_1772273583/2026_02_28_1772273583.sql:/docker-entrypoint-initdb.d/init.sql
 
 #  portainer:
 #    container_name: portainer_notes
