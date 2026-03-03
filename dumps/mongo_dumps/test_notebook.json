@@ -1,0 +1,103 @@
+[
+  {
+    "_id": "1",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:53.000Z"},
+    "notebookname": "Java",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"73\" }", "{ \"$ref\" : \"note\", \"$id\" : \"87\" }", "{ \"$ref\" : \"note\", \"$id\" : \"4\" }", "{ \"$ref\" : \"note\", \"$id\" : \"104\" }", "{ \"$ref\" : \"note\", \"$id\" : \"81\" }", "{ \"$ref\" : \"note\", \"$id\" : \"105\" }", "{ \"$ref\" : \"note\", \"$id\" : \"106\" }", "{ \"$ref\" : \"note\", \"$id\" : \"93\" }", "{ \"$ref\" : \"note\", \"$id\" : \"5\" }", "{ \"$ref\" : \"note\", \"$id\" : \"6\" }", "{ \"$ref\" : \"note\", \"$id\" : \"3\" }", "{ \"$ref\" : \"note\", \"$id\" : \"72\" }", "{ \"$ref\" : \"note\", \"$id\" : \"82\" }", "{ \"$ref\" : \"note\", \"$id\" : \"103\" }", "{ \"$ref\" : \"note\", \"$id\" : \"83\" }", "{ \"$ref\" : \"note\", \"$id\" : \"2\" }"],
+    "sub_notebooks": ["107", "109", "111", "116"]
+  },
+  {
+    "_id": "9",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:57.000Z"},
+    "notebookname": "DB",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"74\" }", "{ \"$ref\" : \"note\", \"$id\" : \"78\" }", "{ \"$ref\" : \"note\", \"$id\" : \"10\" }", "{ \"$ref\" : \"note\", \"$id\" : \"90\" }"]
+  },
+  {
+    "_id": "11",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:57.000Z"},
+    "notebookname": "Codes",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"13\" }", "{ \"$ref\" : \"note\", \"$id\" : \"15\" }", "{ \"$ref\" : \"note\", \"$id\" : \"14\" }", "{ \"$ref\" : \"note\", \"$id\" : \"12\" }", "{ \"$ref\" : \"note\", \"$id\" : \"89\" }", "{ \"$ref\" : \"note\", \"$id\" : \"88\" }"]
+  },
+  {
+    "_id": "16",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:57.000Z"},
+    "notebookname": "Spring",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"70\" }", "{ \"$ref\" : \"note\", \"$id\" : \"92\" }", "{ \"$ref\" : \"note\", \"$id\" : \"115\" }", "{ \"$ref\" : \"note\", \"$id\" : \"85\" }", "{ \"$ref\" : \"note\", \"$id\" : \"75\" }", "{ \"$ref\" : \"note\", \"$id\" : \"80\" }", "{ \"$ref\" : \"note\", \"$id\" : \"113\" }", "{ \"$ref\" : \"note\", \"$id\" : \"101\" }", "{ \"$ref\" : \"note\", \"$id\" : \"86\" }", "{ \"$ref\" : \"note\", \"$id\" : \"17\" }", "{ \"$ref\" : \"note\", \"$id\" : \"71\" }", "{ \"$ref\" : \"note\", \"$id\" : \"114\" }", "{ \"$ref\" : \"note\", \"$id\" : \"91\" }"],
+    "sub_notebooks": ["76", "98"]
+  },
+  {
+    "_id": "18",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:57.000Z"},
+    "notebookname": "Nutrition",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"19\" }"]
+  },
+  {
+    "_id": "20",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T14:16:57.000Z"},
+    "notebookname": "Cloud",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"84\" }", "{ \"$ref\" : \"note\", \"$id\" : \"21\" }"]
+  },
+  {
+    "_id": "68",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "Javascript",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"69\" }", "{ \"$ref\" : \"note\", \"$id\" : \"79\" }"]
+  },
+  {
+    "_id": "76",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "Security",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"95\" }", "{ \"$ref\" : \"note\", \"$id\" : \"94\" }", "{ \"$ref\" : \"note\", \"$id\" : \"97\" }", "{ \"$ref\" : \"note\", \"$id\" : \"100\" }", "{ \"$ref\" : \"note\", \"$id\" : \"96\" }", "{ \"$ref\" : \"note\", \"$id\" : \"77\" }"]
+  },
+  {
+    "_id": "98",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "Microservices",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"99\" }", "{ \"$ref\" : \"note\", \"$id\" : \"102\" }"]
+  },
+  {
+    "_id": "107",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "AWS",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"108\" }"]
+  },
+  {
+    "_id": "109",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "UI",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"110\" }"]
+  },
+  {
+    "_id": "111",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "System Design",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"112\" }"]
+  },
+  {
+    "_id": "116",
+    "_class": "com.note.pojo.Notebook",
+    "cdate": {"$date": "2020-05-09T18:31:25.000Z"},
+    "notebookname": "Photography",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"117\" }"]
+  },
+  {
+    "_id": {"$oid": "62b846e694119a2c1e26e1f2"},
+    "_class": "com.note.pojo.Notebook",
+    "notebookname": "Angular",
+    "notes": ["{ \"$ref\" : \"note\", \"$id\" : \"62b846f594119a2c1e26e1f3\" }"],
+    "sub_notebooks": [],
+    "parent": "1"
+  }
+]
