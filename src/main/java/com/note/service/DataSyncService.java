@@ -36,7 +36,6 @@ public class DataSyncService {
     private BackupService backupService;
 
     @EventListener(ApplicationReadyEvent.class)
-    @Async
     @Transactional("backupTransactionManager")
     public void syncData() {
         logger.info("Starting data sync from MySQL to H2...");
