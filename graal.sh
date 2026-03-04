@@ -1,7 +1,9 @@
 sudo mkdir -p /usr/lib/jvm
 
 # Download (Example for x64 - replace with aarch64 if on Pi)
-wget https://download.oracle.com/graalvm/25/latest/graalvm-jdk-25_linux-x64_bin.tar.gz
+#wget https://download.oracle.com/graalvm/25/latest/graalvm-jdk-25_linux-x64_bin.tar.gz
+#RPI 5
+wget https://download.oracle.com/graalvm/25/latest/graalvm-jdk-25_linux-aarch64_bin.tar.gz
 
 # Extract
 sudo tar -xzf graalvm-jdk-25_linux-x64_bin.tar.gz -C /usr/lib/jvm/
