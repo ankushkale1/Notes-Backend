@@ -7,9 +7,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.util.Base64Utils;
 
 import java.io.File;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +50,7 @@ public class MonteParser implements CommandLineRunner {
 
                             String b64_img = base64
                                     .replace("{ext}", FilenameUtils.getExtension(image.getName()))
-                                    .replace("{b64}", Base64Utils.encodeToString(FileUtils.readFileToByteArray(image)));
+                                    .replace("{b64}", Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(image)));
 
                             //System.out.println("Path: "+image.getAbsolutePath()+" "+b64_img.length());
                             template = template.replace(image.getAbsolutePath(), b64_img);
