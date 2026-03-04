@@ -33,13 +33,13 @@ public class NotesExport {
             , returning = "note")
     public void exportNote(Note note) {
         try {
-            System.out.println("Called before save / update Note: " + note.getNotename());
+            IO.println("Called before save / update Note: " + note.getNotename());
             new File(NOTE_PATH + "/" + note.getNotebook().getNotebookname()).mkdirs();
             FileUtils.write(
                     new File(NOTE_PATH + "/" + note.getNotebook().getNotebookname()
                             + "/" + note.getNotename() + ".json"),
                     note.getJsonnotes());
-        } catch (Exception e) {
+        } catch (Exception _) {
         }
     }
 
@@ -48,19 +48,19 @@ public class NotesExport {
         try {
             Object[] args = point.getArgs();
             Note note = (Note) args[0];
-            System.out.println("Converting Images Note: " + note.getNotename());
+            IO.println("Converting Images Note: " + note.getNotename());
             //convertImages(note);
             Map<String, Object> quillDeltaJson = objectMapper.readValue(note.getJsonnotes(), Map.class);
             processAndSaveNote(quillDeltaJson);
             note.setJsonnotes(objectMapper.writeValueAsString(quillDeltaJson));
-        } catch (Exception e) {
+        } catch (Exception _) {
         }
     }
 
     @AfterReturning(pointcut = "execution(* com.note.service.NoteService.*(..))"
             , returning = "result")
     public void logNotesOps(JoinPoint joinPoint, Object result) {
-        System.out.println("Executed for every note service method..");
+        IO.println("Executed for every note service method..");
         //System.out.println("Method: "+joinPoint.getSignature().getName()
         //+" Args: "+joinPoint.getArgs()
         //+" Return Value: "+result);
@@ -158,7 +158,7 @@ public class NotesExport {
         // Now you have updated ops with base64 images. Save the note (this could be a DB save operation).
         // In this example, we will just print the updated JSON
         quillDeltaJson.put("ops", updatedOps);
-        System.out.println("Updated Quill Delta JSON with Base64 images: " + quillDeltaJson);
+        IO.println("Updated Quill Delta JSON with Base64 images: " + quillDeltaJson);
 
         // Return success message (you can save this to a database if needed)
         return "Note saved successfully with Base64 images.";
@@ -166,7 +166,7 @@ public class NotesExport {
 
     // Convert an image from URL to Base64 format
     private String convertImageToBase64(String imageUrl) throws Exception {
-        System.out.println(">> Converting Image to Base64..." + imageUrl);
+        IO.println(">> Converting Image to Base64..." + imageUrl);
         URL url = new URL(imageUrl);
         URLConnection connection = url.openConnection();
         connection.setConnectTimeout(2000);  // Timeout for establishing connection
@@ -174,7 +174,7 @@ public class NotesExport {
         String contentType = connection.getContentType();
         try (InputStream is = connection.getInputStream()) {
             byte[] imageBytes = is.readAllBytes();
-            System.out.println(">> Done Converting Image to Base64..." + imageUrl);
+            IO.println(">> Done Converting Image to Base64..." + imageUrl);
             return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(imageBytes);
         }
     }

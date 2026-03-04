@@ -2,7 +2,7 @@ package com.note;
 
 public class Test {
 
-    public static void main(String[] args) {
+    void main() {
         //Stream.of("Akbkckdkekfkjk".toCharArray()).map()
     }
 }

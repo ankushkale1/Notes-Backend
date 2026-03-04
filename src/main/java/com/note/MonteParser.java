@@ -94,6 +94,6 @@ public class MonteParser implements CommandLineRunner {
             }
         }
 
-        System.out.println("Notes imported: " + count);
+        IO.println("Notes imported: " + count);
     }
 }
