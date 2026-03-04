@@ -191,6 +191,24 @@ var menu_item_template = `
 
 var mymenu = "";
 
+$(document).on('click', function (event) {
+    const $sidebar = $('.modern-sidebar');
+    const $toggleBtn = $('#topbarToggle');
+
+    // Check if sidebar is currently visible (body does NOT have the collapsed class)
+    const isSidebarOpen = !$('body').hasClass('sidebar-collapsed');
+
+    // If sidebar is open, and the click was NOT on the sidebar or the toggle button
+    if (isSidebarOpen &&
+        !$sidebar.is(event.target) &&
+        $sidebar.has(event.target).length === 0 &&
+        !$toggleBtn.is(event.target) &&
+        $toggleBtn.has(event.target).length === 0) {
+
+        $('body').addClass('sidebar-collapsed');
+    }
+});
+
 function populateNoteBooks() {
     $('#menu-content').html("");
     $('.mynotebooks').html('');
