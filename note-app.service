@@ -10,7 +10,6 @@ ExecStart=/bin/bash /home/ankush/NotesApp-BackEnd/start.sh
 # Liveness and Restart Logic
 Restart=always
 RestartSec=10
-StartLimitIntervalSec=0
 
 # Resource Protection
 #MemoryMax=1500M
