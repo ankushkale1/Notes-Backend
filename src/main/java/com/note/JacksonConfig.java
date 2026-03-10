@@ -14,7 +14,7 @@ public class JacksonConfig {
     public ObjectMapper objectMapper() {
         // 1. Define constraints
         StreamReadConstraints constraints = StreamReadConstraints.builder()
-                .maxStringLength(500_000_000)
+                .maxStringLength(20_000_000)
                 .build();
 
         // 2. Build the Factory (Public API)
