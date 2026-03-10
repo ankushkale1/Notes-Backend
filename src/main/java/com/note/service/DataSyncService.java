@@ -6,6 +6,8 @@ import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,33 +63,35 @@ public class DataSyncService {
 
     public void syncNotebooksUpsert() {
         logger.info("Upserting Notebooks...");
-        List<Notebook> allNotebooks = notebookRepository.findAll(); // From MySQL
+        // 1. Unwrap to the Hibernate StatelessSession
+        SessionFactory sessionFactory = backupEntityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        try (StatelessSession session = sessionFactory.openStatelessSession()) {
+            List<Notebook> allNotebooks = notebookRepository.findAll(); // From MySQL
+            // 1. Temporarily disable FK checks for bulk sync
+            backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+            try {
+                for (Notebook mysqlNote : allNotebooks) {
+                    Notebook backup = new Notebook();
+                    backup.setNotebook_id(mysqlNote.getNotebook_id());
+                    backup.setNotebookname(mysqlNote.getNotebookname());
+                    backup.setCdate(mysqlNote.getCdate());
+                    backup.setUdate(mysqlNote.getUdate());
 
-        // 1. Temporarily disable FK checks for bulk sync
-        backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+                    // Create a stub parent with only the ID
+                    if (mysqlNote.getParent() != null) {
+                        Notebook parentStub = new Notebook();
+                        parentStub.setNotebook_id(mysqlNote.getParent().getNotebook_id());
+                        backup.setParent(parentStub);
+                    }
 
-        try {
-            for (Notebook mysqlNote : allNotebooks) {
-                Notebook backup = new Notebook();
-                backup.setNotebook_id(mysqlNote.getNotebook_id());
-                backup.setNotebookname(mysqlNote.getNotebookname());
-                backup.setCdate(mysqlNote.getCdate());
-                backup.setUdate(mysqlNote.getUdate());
-
-                // Create a stub parent with only the ID
-                if (mysqlNote.getParent() != null) {
-                    Notebook parentStub = new Notebook();
-                    parentStub.setNotebook_id(mysqlNote.getParent().getNotebook_id());
-                    backup.setParent(parentStub);
+                    // 2. merge() detects existing IDs and prevents 1,2,3 overwrites
+                    session.upsert(backup);
                 }
-
-                // 2. merge() detects existing IDs and prevents 1,2,3 overwrites
-                backupEntityManager.merge(backup);
+                backupEntityManager.flush();
+            } finally {
+                // 3. Always re-enable integrity for data safety
+                backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
             }
-            backupEntityManager.flush();
-        } finally {
-            // 3. Always re-enable integrity for data safety
-            backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
         }
     }
 
