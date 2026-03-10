@@ -6,7 +6,7 @@ sudo mkdir -p /usr/lib/jvm
 wget https://download.oracle.com/graalvm/25/latest/graalvm-jdk-25_linux-aarch64_bin.tar.gz
 
 # Extract
-sudo tar -xzf graalvm-jdk-25_linux-x64_bin.tar.gz -C /usr/lib/jvm/
+sudo tar -xzf graalvm-jdk-25_linux-aarch64_bin.tar.gz -C /usr/lib/jvm/
 
 # Find the exact folder name created (likely jdk-25.x.x)
 ls /usr/lib/jvm/

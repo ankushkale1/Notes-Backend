@@ -1,8 +1,9 @@
 package com.note.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import com.note.config.SyncIdGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -48,7 +49,7 @@ public class Notebook {
     @JsonBackReference
     Notebook parent = null;
 
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
     List<Notebook> sub_notebooks;
 

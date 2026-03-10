@@ -1,8 +1,9 @@
 package com.note;
 
-import com.fasterxml.jackson.core.StreamReadConstraints;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,16 +12,18 @@ public class JacksonConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // Set the maximum string length allowed for reading (adjust the value as needed)
+        // 1. Define constraints
         StreamReadConstraints constraints = StreamReadConstraints.builder()
-                .maxStringLength(500_000_000)  // Set your desired max string length
+                .maxStringLength(500_000_000)
                 .build();
 
-        objectMapper.getFactory().setStreamReadConstraints(constraints);
-        objectMapper.registerModule(new JavaTimeModule());
+        // 2. Build the Factory (Public API)
+        JsonFactory factory = JsonFactory.builder()
+                .streamReadConstraints(constraints)
+                .build();
 
-        return objectMapper;
+        // 3. Create the Mapper via the specific JsonMapper builder
+        return JsonMapper.builder(factory)
+                .build();
     }
 }

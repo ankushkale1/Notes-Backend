@@ -1,6 +1,6 @@
 package com.note.aspects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.note.pojo.Note;
 import io.github.biezhi.webp.WebpIO;
 import org.apache.commons.io.FileUtils;
