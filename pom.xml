@@ -134,6 +134,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>3.0.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -148,8 +154,13 @@
                 <configuration>
                     <buildArgs>
                         <arg>-Dorg.jboss.logging.provider=slf4j</arg>
-                        <arg>--initialize-at-build-time=org.jboss.logging.Logger</arg>
                         <arg>--initialize-at-run-time=org.hibernate.search.mapper.orm.common.impl.HibernateOrmUtils</arg>
+                        <arg>--enable-preview</arg>
+                        <arg>-H:+InstallExitHandlers</arg>
+                        <arg>--initialize-at-build-time=org.jboss.logging.Logger,org.jboss.logging.DelegatingBasicLogger</arg>
+                        <arg>--initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.helpers.CheckLoggerEvents,org.slf4j.helpers.SubstituteServiceProvider,org.slf4j.helpers.NOP_FallbackServiceProvider,org.slf4j.helpers.SubstituteLoggerFactory</arg>
+                        <arg>--initialize-at-build-time=org.hibernate.search.mapper.orm.logging.impl.VersionLog</arg>
+                        <arg>--initialize-at-build-time=ch.qos.logback.classic.spi.LogbackServiceProvider</arg>
                     </buildArgs>
                     <metadataRepository>
                         <enabled>true</enabled>
@@ -188,11 +199,23 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
                 <configuration>
+                    <compilerArgs>
+                        <arg>-proc:full</arg>
+                        <arg>--enable-preview</arg>
+                    </compilerArgs>
+                    <release>25</release>
+                    <parameters>true</parameters>
+                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedSourcesDirectory>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.42</version>
+                        </path>
+                        <path>
+                            <groupId>org.jboss.logging</groupId>
+                            <artifactId>jboss-logging-processor</artifactId>
+                            <version>3.0.3.Final</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

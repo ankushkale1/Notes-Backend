@@ -19,6 +19,9 @@ public class DatabaseRuntimeHints implements RuntimeHintsRegistrar {
         hints.reflection().registerType(TypeReference.of("com.note.pojo.Note"));
         hints.reflection().registerType(TypeReference.of("com.note.pojo.Notebook"));
 
+        // Register your custom generator for reflection
+        hints.reflection().registerType(com.note.config.SyncIdGenerator.class);
+
         // Fix for: Invalid logger interface org.hibernate.search.mapper.orm.logging.impl.Log
         hints.proxies().registerJdkProxy(
                 TypeReference.of("org.hibernate.search.mapper.orm.logging.impl.Log")
