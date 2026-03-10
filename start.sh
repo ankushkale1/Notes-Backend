@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker-compose -f docker-compose-local.yml up -d mysqldb
+docker compose -f docker-compose-local.yml up -d mysqldb
 
 # Kill any existing instance of the app before starting
 pkill -f NotesApp-0.0.1.jar || true
