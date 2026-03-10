@@ -33,6 +33,6 @@ pkill -f NotesApp-0.0.1.jar || true
     -XX:G1PeriodicGCInterval=30000 \
     -Dspring.main.lazy-initialization=true \
     -Dspring.jmx.enabled=false \
-    -jar /home/ankush/NotesApp-BackEnd/target/NotesApp-0.0.1.jar > app.log 2>&1 &
+    -jar /home/ankush/NotesApp-BackEnd/target/NotesApp-0.0.1.jar
 
 echo "NoteBook App starting on port 8999..."
