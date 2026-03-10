@@ -148,35 +148,35 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <configuration>
-                    <buildArgs>
-                        <arg>-Dorg.jboss.logging.provider=slf4j</arg>
-                        <arg>--initialize-at-run-time=org.hibernate.search.mapper.orm.common.impl.HibernateOrmUtils</arg>
-                        <arg>--enable-preview</arg>
-                        <arg>-H:+InstallExitHandlers</arg>
-                        <arg>--initialize-at-build-time=org.jboss.logging.Logger,org.jboss.logging.DelegatingBasicLogger</arg>
-                        <arg>--initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.helpers.CheckLoggerEvents,org.slf4j.helpers.SubstituteServiceProvider,org.slf4j.helpers.NOP_FallbackServiceProvider,org.slf4j.helpers.SubstituteLoggerFactory</arg>
-                        <arg>--initialize-at-build-time=org.hibernate.search.mapper.orm.logging.impl.VersionLog</arg>
-                        <arg>--initialize-at-build-time=ch.qos.logback.classic.spi.LogbackServiceProvider</arg>
-                    </buildArgs>
-                    <metadataRepository>
-                        <enabled>true</enabled>
-                    </metadataRepository>
-                </configuration>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>compile-no-fork</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.graalvm.buildtools</groupId>-->
+<!--                <artifactId>native-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <buildArgs>-->
+<!--                        <arg>-Dorg.jboss.logging.provider=slf4j</arg>-->
+<!--                        <arg>&#45;&#45;initialize-at-run-time=org.hibernate.search.mapper.orm.common.impl.HibernateOrmUtils</arg>-->
+<!--                        <arg>&#45;&#45;enable-preview</arg>-->
+<!--                        <arg>-H:+InstallExitHandlers</arg>-->
+<!--                        <arg>&#45;&#45;initialize-at-build-time=org.jboss.logging.Logger,org.jboss.logging.DelegatingBasicLogger</arg>-->
+<!--                        <arg>&#45;&#45;initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.helpers.CheckLoggerEvents,org.slf4j.helpers.SubstituteServiceProvider,org.slf4j.helpers.NOP_FallbackServiceProvider,org.slf4j.helpers.SubstituteLoggerFactory</arg>-->
+<!--                        <arg>&#45;&#45;initialize-at-build-time=org.hibernate.search.mapper.orm.logging.impl.VersionLog</arg>-->
+<!--                        <arg>&#45;&#45;initialize-at-build-time=ch.qos.logback.classic.spi.LogbackServiceProvider</arg>-->
+<!--                    </buildArgs>-->
+<!--                    <metadataRepository>-->
+<!--                        <enabled>true</enabled>-->
+<!--                    </metadataRepository>-->
+<!--                </configuration>-->
+<!--                <extensions>true</extensions>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>build-native</id>-->
+<!--                        <goals>-->
+<!--                            <goal>compile-no-fork</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>package</phase>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
