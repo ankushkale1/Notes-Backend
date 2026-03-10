@@ -98,10 +98,20 @@ public class DataSyncService {
     public void syncNotesUpsert() {
         logger.info("Upserting Notes...");
         List<Note> notes = noteRepository.findAll();
-        if (!notes.isEmpty()) {
-            backupService.saveNotes(notes);
-            logger.info("Upserted {} notes.", notes.size());
+        // 1. Get the Hibernate SessionFactory from the EntityManager
+        SessionFactory sessionFactory = backupEntityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        // 2. Open a StatelessSession for high-performance, low-RAM sync
+        try (StatelessSession session = sessionFactory.openStatelessSession()) {
+            backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+            for (Note note : notes) {
+                // 3. Hibernate 7 'upsert' ignores @Version and handles INSERT/UPDATE automatically
+                session.upsert(note);
+            }
+        } finally {
+            backupEntityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         }
+
+        logger.info("Upserted {} notes.", notes.size());
     }
 
     public void cleanupStaleNotes() {
