@@ -1,0 +1,24 @@
+[Unit]
+Description=NotesApp Backend Service (Optimized for RPi 5)
+After=network.target mariadb.service docker.service
+
+[Service]
+User=ankush
+WorkingDirectory=/home/ankush/NotesApp-BackEnd
+ExecStart=/bin/bash /home/ankush/NotesApp-BackEnd/start.sh
+
+# Liveness and Restart Logic
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=0
+
+# Resource Protection
+#MemoryMax=1500M
+#CPUWeight=50
+
+# Logging to Journald (accessible via journalctl)
+StandardOutput=append:/home/ankush/NotesApp-BackEnd/logs/app.log
+StandardError=append:/home/ankush/NotesApp-BackEnd/logs/error.log
+
+[Install]
+WantedBy=multi-user.target
