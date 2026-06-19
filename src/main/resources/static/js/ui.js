@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    sideBarInit();
+    // sideBarInit();
     pageInit();
     popup_init();
 
@@ -31,7 +31,7 @@ function clearPrevSearch() {
     $('[name="stxt"]').val("");
 }
 
-function htmlbodyHeightUpdate() {
+/*function htmlbodyHeightUpdate() {
     var height3 = $(window).height()
     var height1 = $('.nav').height() + 50
     height2 = $('.main').height()
@@ -53,7 +53,7 @@ function sideBarInit() {
         height2 = $('.main').height()
         htmlbodyHeightUpdate()
     });
-}
+}*/
 
 function popup_init() {
     $(document).ready(function () {
