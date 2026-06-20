@@ -39,7 +39,7 @@ public class NotesExport {
                     new File(NOTE_PATH + "/" + note.getNotebook().getNotebookname()
                             + "/" + note.getNotename() + ".json"),
                     note.getJsonnotes());
-        } catch (Exception _) {
+        } catch (Exception e) {
         }
     }
 
@@ -53,7 +53,7 @@ public class NotesExport {
             Map<String, Object> quillDeltaJson = objectMapper.readValue(note.getJsonnotes(), Map.class);
             processAndSaveNote(quillDeltaJson);
             note.setJsonnotes(objectMapper.writeValueAsString(quillDeltaJson));
-        } catch (Exception _) {
+        } catch (Exception e) {
         }
     }
 

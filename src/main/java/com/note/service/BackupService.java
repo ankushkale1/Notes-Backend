@@ -5,12 +5,18 @@ import com.note.backup.repo.BackupNotebookRepository;
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@ConditionalOnProperty(
+        name = "backup.db.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class BackupService {
 
     @Autowired
@@ -58,7 +64,7 @@ public class BackupService {
     public void deleteNotebooks(List<Integer> ids) {
         backupNotebookRepository.deleteAllById(ids);
     }
-    
+
     @Transactional(value = "backupTransactionManager", readOnly = true)
     public List<Note> findAllNotes() {
         return backupNoteRepository.findAll();

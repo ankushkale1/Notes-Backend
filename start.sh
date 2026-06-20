@@ -25,14 +25,18 @@ pkill -f NotesApp-0.0.1.jar || true
 
 
   # for Graal VM
-  exec java --enable-preview \
+exec java --enable-preview \
     -XX:+UseSerialGC \
     -Xms32m \
-    -Xmx512m \
+    -Xmx400m \
     -XX:MaxMetaspaceSize=160M \
-    -XX:G1PeriodicGCInterval=30000 \
+    -XX:MaxHeapFreeRatio=30 \
+    -XX:MinHeapFreeRatio=10 \
+    -XX:MaxDirectMemorySize=64M \
+    -Xss256k \
     -Dspring.main.lazy-initialization=true \
     -Dspring.jmx.enabled=false \
+    -Dspring.threads.virtual.enabled=true \
     -jar /home/ankush/NotesApp-BackEnd/target/NotesApp-0.0.1.jar
 
 echo "NoteBook App starting on port 8999..."

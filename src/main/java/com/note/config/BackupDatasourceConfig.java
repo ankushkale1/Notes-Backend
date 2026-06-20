@@ -1,8 +1,9 @@
 package com.note.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,11 @@ import java.util.Map;
         entityManagerFactoryRef = "backupEntityManagerFactory",
         transactionManagerRef = "backupTransactionManager",
         basePackages = {"com.note.backup.repo"}
+)
+@ConditionalOnProperty(
+        name = "backup.db.enabled",
+        havingValue = "true",
+        matchIfMissing = true
 )
 public class BackupDatasourceConfig {
 

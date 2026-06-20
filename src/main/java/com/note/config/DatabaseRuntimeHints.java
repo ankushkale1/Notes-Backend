@@ -3,6 +3,7 @@ package com.note.config;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
@@ -35,4 +36,10 @@ public class DatabaseRuntimeHints implements RuntimeHintsRegistrar {
 
 @Configuration
 @ImportRuntimeHints(DatabaseRuntimeHints.class)
-class NativeConfig {}
+@ConditionalOnProperty(
+        name = "backup.db.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
+class NativeConfig {
+}
