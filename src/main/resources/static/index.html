@@ -189,6 +189,7 @@
             padding: 30px;
             box-sizing: border-box;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; /* important for absolute positioning inside it */
         }
 
         /* Main Content Expanded State */
@@ -266,6 +267,40 @@
         .dropdown-menu { background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important; }
         .dropdown-menu > li > a { color: var(--text-main) !important; }
         .dropdown-menu > li > a:hover { background-color: var(--bg-active) !important; color: var(--text-active) !important; }
+
+        /* --- Image Resize Toolbar --- */
+        #image-resize-toolbar {
+            position: absolute;
+            display: none;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            gap: 4px;
+        }
+        #image-resize-toolbar button {
+            margin: 0;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: var(--bg-main) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
+        }
+        #image-resize-toolbar button:hover {
+            background-color: var(--bg-hover) !important;
+            color: var(--text-active) !important;
+        }
+
+        .ql-editor img {
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .ql-editor img.selected-image {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
     </style>
 
     <script src="js/jquery-3.4.0.min.js"></script>
@@ -351,6 +386,12 @@
 </div>
 
 <div class="main">
+    <div id="image-resize-toolbar">
+        <button data-scale="25">25%</button>
+        <button data-scale="50">50%</button>
+        <button data-scale="75">75%</button>
+        <button data-scale="100">Reset</button>
+    </div>
     <div id="editor"><p>Start typing your note here...</p></div>
 </div>
 

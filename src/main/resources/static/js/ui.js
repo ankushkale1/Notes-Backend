@@ -31,30 +31,6 @@ function clearPrevSearch() {
     $('[name="stxt"]').val("");
 }
 
-/*function htmlbodyHeightUpdate() {
-    var height3 = $(window).height()
-    var height1 = $('.nav').height() + 50
-    height2 = $('.main').height()
-    if (height2 > height3) {
-        $('html').height(Math.max(height1, height3, height2) + 10);
-        $('body').height(Math.max(height1, height3, height2) + 10);
-    } else {
-        $('html').height(Math.max(height1, height3, height2));
-        $('body').height(Math.max(height1, height3, height2));
-    }
-}
-
-function sideBarInit() {
-    htmlbodyHeightUpdate()
-    $(window).resize(function () {
-        htmlbodyHeightUpdate()
-    });
-    $(window).scroll(function () {
-        height2 = $('.main').height()
-        htmlbodyHeightUpdate()
-    });
-}*/
-
 function popup_init() {
     $(document).ready(function () {
         $('.mypopup').magnificPopup({
@@ -122,6 +98,31 @@ $(window).on('load', function () {
     }
     window.hljs = hljs;
 
+    // Extend Quill's native Image blot to support 'width' formatting
+    var BaseImageFormat = Quill.import('formats/image');
+    class ImageFormat extends BaseImageFormat {
+        static formats(domNode) {
+            return domNode.getAttribute('width') || domNode.style.width;
+        }
+
+        format(name, value) {
+            if (name === 'width') {
+                if (value) {
+                    this.domNode.setAttribute('width', value);
+                    this.domNode.style.width = value;
+                } else {
+                    this.domNode.removeAttribute('width');
+                    this.domNode.style.width = '';
+                }
+            } else {
+                super.format(name, value);
+            }
+        }
+    }
+    ImageFormat.blotName = 'image';
+    ImageFormat.tagName = 'img';
+    Quill.register(ImageFormat, true);
+
     try {
         editor = new Quill('#editor', {
             theme: 'snow',
@@ -178,6 +179,65 @@ $(window).on('load', function () {
                     mainContainer.scrollTop = currentScrollTop;
                 }
             }, 50);
+        });
+
+        // Image resizing logic
+        let selectedImage = null;
+        const resizeToolbar = document.getElementById('image-resize-toolbar');
+
+        // Listen for clicks on images within the editor
+        editor.root.addEventListener('click', function(e) {
+            if (e.target && e.target.tagName === 'IMG') {
+                if (selectedImage) {
+                    selectedImage.classList.remove('selected-image');
+                }
+                selectedImage = e.target;
+                selectedImage.classList.add('selected-image');
+
+                // Position the toolbar above the image
+                const imgRect = selectedImage.getBoundingClientRect();
+                const mainRect = mainContainer.getBoundingClientRect();
+                
+                // Calculate position relative to .main container
+                const top = imgRect.top - mainRect.top + mainContainer.scrollTop - 40; // 40px above image
+                const left = imgRect.left - mainRect.left + (imgRect.width / 2) - (resizeToolbar.offsetWidth / 2);
+
+                resizeToolbar.style.top = `${Math.max(10, top)}px`;
+                resizeToolbar.style.left = `${Math.max(10, left)}px`;
+                resizeToolbar.style.display = 'flex';
+                
+                // Prevent the document click listener from immediately hiding the toolbar
+                e.stopPropagation();
+            }
+        });
+
+        // Handle toolbar button clicks
+        resizeToolbar.addEventListener('click', function(e) {
+            if (e.target && e.target.tagName === 'BUTTON' && selectedImage) {
+                const scale = e.target.getAttribute('data-scale');
+                const blot = Quill.find(selectedImage);
+
+                if (blot) {
+                    if (scale === '100') {
+                        blot.format('width', false); // Remove width style
+                    } else {
+                        blot.format('width', `${scale}%`);
+                    }
+                    unsaved_content = true;
+                }
+                e.stopPropagation(); // Keep toolbar open while clicking its buttons
+            }
+        });
+
+        // Hide toolbar when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (resizeToolbar.style.display === 'flex' && !resizeToolbar.contains(e.target)) {
+                resizeToolbar.style.display = 'none';
+                if (selectedImage) {
+                    selectedImage.classList.remove('selected-image');
+                    selectedImage = null;
+                }
+            }
         });
 
     } catch (error) {
