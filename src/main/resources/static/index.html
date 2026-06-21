@@ -44,7 +44,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            overflow: hidden; /* Prevent body scrolling */
         }
 
         /* --- Global Loader Overlay --- */
@@ -184,8 +184,9 @@
         .main {
             margin-top: 50px;
             margin-left: 260px;
+            height: calc(100vh - 50px); /* Full viewport height minus navbar */
+            overflow-y: auto; /* Enable vertical scrolling within .main */
             padding: 30px;
-            min-height: calc(100vh - 50px);
             box-sizing: border-box;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -252,7 +253,7 @@
         }
         .ql-toolbar.ql-snow {
             background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important;
-            border-radius: 8px 8px 0 0; position: sticky; top: 50px; z-index: 1000; padding: 10px !important;
+            border-radius: 8px 8px 0 0; position: sticky; top: 0; z-index: 1000; padding: 10px !important;
         }
         .ql-snow .ql-stroke { stroke: var(--text-muted) !important; }
         .ql-snow .ql-fill { fill: var(--text-muted) !important; }

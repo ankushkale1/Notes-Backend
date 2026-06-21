@@ -155,6 +155,31 @@ $(window).on('load', function () {
             }
         });
         console.log("[Debug] Quill Editor initialized successfully with Java-biased syntax highlighting.");
+
+        // Fix for jumping to top on paste
+        const mainContainer = document.querySelector('.main');
+        editor.root.addEventListener('paste', function(e) {
+            if (!mainContainer) return;
+            
+            // 1. Record the exact scroll position before the paste happens
+            const currentScrollTop = mainContainer.scrollTop;
+            
+            // 2. Immediately after the paste event finishes processing, restore the scroll
+            setTimeout(() => {
+                if (mainContainer.scrollTop !== currentScrollTop) {
+                    mainContainer.scrollTop = currentScrollTop;
+                }
+            }, 0);
+            
+            // 3. Fallback: Sometimes DOM reflows take a fraction of a second longer,
+            // so we check and restore again shortly after.
+            setTimeout(() => {
+                if (mainContainer.scrollTop !== currentScrollTop) {
+                    mainContainer.scrollTop = currentScrollTop;
+                }
+            }, 50);
+        });
+
     } catch (error) {
         console.error("[Error] Failed to initialize Quill editor:", error);
     }
