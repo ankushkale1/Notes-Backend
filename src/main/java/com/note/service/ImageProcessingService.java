@@ -106,9 +106,9 @@ public class ImageProcessingService {
 
             // GATING LOGIC: Explicitly skip SVG and GIF before triggering conversion
             if (currentImage.startsWith("data:image")
-                    && !currentImage.contains("webp")
-                    && !currentImage.contains("gif")
-                    && !currentImage.contains("svg")) {
+                    && (!currentImage.contains("webp")
+                    || !currentImage.contains("gif")
+                    || !currentImage.contains("svg"))) {
                 return convertToWebP(currentImage);
             }
 
