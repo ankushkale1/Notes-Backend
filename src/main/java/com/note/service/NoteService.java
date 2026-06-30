@@ -1,5 +1,6 @@
 package com.note.service;
 
+import com.note.exception.ResourceNotFoundException;
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Collections;
 
@@ -18,11 +18,8 @@ public class NoteService {
     @Autowired
     NoteRepository note_repo;
 
-    //@Autowired
-    //BackupService backupService;
-
-//    @Autowired
-//    SearchService search;
+    @Autowired
+    ImageProcessingService imageProcessingService;
 
     @Autowired
     NotebookRepository notebook_repo;
@@ -38,21 +35,18 @@ public class NoteService {
 
     @Transactional(readOnly = true)
     public Note getNoteDetails(Integer note_id) {
-        Optional<Note> note = note_repo.findById(note_id);
-        if (note.isPresent()) {
-            Notebook book = note.get().getNotebook(); //so that we get notebook id
-            note.get().setNotebook_id(book.getNotebook_id());
-            return note.get();
-        } else
-            return new Note();
+        Note note = note_repo.findById(note_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found with id: " + note_id));
+        
+        Notebook book = note.getNotebook();
+        note.setNotebook_id(book.getNotebook_id());
+        return note;
     }
 
     public Note addUpdateNote(Note note) {
-        Note res = null;
-        res = note_repo.save(note);
+        imageProcessingService.processNoteImages(note);
+        Note res = note_repo.save(note);
         res.setNotebook_id(res.getNotebook().getNotebook_id());
-        //convertImages(note);
-        //saveToBackup(res);
         return res;
     }
 
@@ -64,11 +58,15 @@ public class NoteService {
         Notebook res = null;
         if (note.getParent() != null) //i.e parent passed
         {
-            Optional<Notebook> parent = notebook_repo.findById(note.getParent().getNotebook_id());
-            note.setParent(parent.isPresent() ? parent.get() : null);
+            res = notebook_repo.findById(note.getParent().getNotebook_id())
+                    .map(parent -> {
+                        note.setParent(parent);
+                        return notebook_repo.save(note);
+                    })
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent notebook not found with id: " + note.getParent().getNotebook_id()));
+        } else {
+            res = notebook_repo.save(note);
         }
-
-        res = notebook_repo.save(note);
         //saveNotebookToBackup(res);
         return res;
     }
@@ -78,10 +76,12 @@ public class NoteService {
     }
 
     public boolean deleteNote(Integer note_id) {
-        boolean res = true;
+        if (!note_repo.existsById(note_id)) {
+            throw new ResourceNotFoundException("Note not found with id: " + note_id);
+        }
         note_repo.deleteById(note_id);
         //deleteNoteFromBackup(note_id);
-        return res;
+        return true;
     }
 
     public void deleteNoteFromBackup(Integer note_id) {
@@ -89,10 +89,12 @@ public class NoteService {
     }
 
     public boolean deleteNotebook(Integer notebook_id) {
-        boolean res = true;
+        if (!notebook_repo.existsById(notebook_id)) {
+            throw new ResourceNotFoundException("Notebook not found with id: " + notebook_id);
+        }
         notebook_repo.deleteById(notebook_id);
         //deleteNotebookFromBackup(notebook_id);
-        return res;
+        return true;
     }
 
     public void deleteNotebookFromBackup(Integer notebook_id) {

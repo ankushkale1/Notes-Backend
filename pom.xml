@@ -86,9 +86,9 @@
             <version>1.15.3</version>
         </dependency>
         <dependency>
-            <groupId>io.github.biezhi</groupId>
-            <artifactId>webp-io</artifactId>
-            <version>0.0.5</version>
+            <groupId>com.sksamuel.scrimage</groupId>
+            <artifactId>scrimage-webp</artifactId>
+            <version>4.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
