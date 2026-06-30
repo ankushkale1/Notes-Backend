@@ -2,16 +2,17 @@ package com.note.service;
 
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
+import com.note.pojo.NotebookInfo;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Collections;
 
 @Service
 public class NoteService {
@@ -28,15 +29,8 @@ public class NoteService {
     NotebookRepository notebook_repo;
 
     @Transactional(readOnly = true)
-    public List<Notebook> listNoteBooksOnly() {
-        List<Notebook> res = Collections.EMPTY_LIST;
-        res = notebook_repo.getNotebooksOnly();
-
-        for (Notebook notebook : res)
-            for (Note note : notebook.getNotes())
-                note.setJsonnotes("");
-
-        return res;
+    public List<NotebookInfo> listNoteBooksOnly() {
+        return notebook_repo.findNotebooksOnly();
     }
 
     @Transactional(readOnly = true)

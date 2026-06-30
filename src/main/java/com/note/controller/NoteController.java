@@ -2,12 +2,12 @@ package com.note.controller;
 
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
+import com.note.pojo.NotebookInfo;
 import com.note.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -18,9 +18,8 @@ public class NoteController {
     NoteService service;
 
     @GetMapping("getNoteBooks")
-    public ResponseEntity<List<Notebook>> listNoteBooks() {
-        List<Notebook> res = Collections.EMPTY_LIST;
-        res = service.listNoteBooksOnly();
+    public ResponseEntity<List<NotebookInfo>> listNoteBooks() {
+        List<NotebookInfo> res = service.listNoteBooksOnly();
         return ResponseEntity.ok(res);
     }
 
@@ -59,8 +58,7 @@ public class NoteController {
 
     @GetMapping("search/{searchtxt}")
     public ResponseEntity<Set<Note>> searchNotes(@PathVariable("searchtxt") String txt) {
-        Set<Note> res = Collections.EMPTY_SET;
-        res = service.searchNotes(txt);
+        Set<Note> res = service.searchNotes(txt);
         return ResponseEntity.ok(res);
     }
 }
