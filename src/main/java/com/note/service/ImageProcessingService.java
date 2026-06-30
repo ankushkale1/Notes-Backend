@@ -3,96 +3,148 @@ package com.note.service;
 import com.note.pojo.Note;
 import com.sksamuel.scrimage.ImmutableImage;
 import com.sksamuel.scrimage.webp.WebpWriter;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 
 @Service
 public class ImageProcessingService {
 
-    /**
-     * Processes a Note object to convert images to WebP and embed external images.
-     * This is the main entry point for image processing.
-     */
+    private static final Logger log = LoggerFactory.getLogger(ImageProcessingService.class);
+
+    // Modern HTTP Client - Thread-safe, reuses connections, prevents hung sockets
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(3))
+            .build();
+
+    // Jackson is thread-safe for reading, and the standard in Spring Boot
+    private final ObjectMapper objectMapper;
+
+    public ImageProcessingService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     public void processNoteImages(Note note) {
-        if (note == null || note.getJsonnotes() == null || note.getJsonnotes().isEmpty()) {
+        if (note == null || note.getJsonnotes() == null || note.getJsonnotes().isBlank()) {
             return;
         }
 
         try {
-            JSONObject jobj = new JSONObject(note.getJsonnotes());
-            JSONArray ops = jobj.optJSONArray("ops");
-            if (ops == null) return;
+            JsonNode rootNode = objectMapper.readTree(note.getJsonnotes());
+            JsonNode opsNode = rootNode.path("ops");
 
-            IntStream.range(0, ops.length())
-                    .parallel() // Use a parallel stream for concurrent processing
-                    .forEach(i -> {
-                        JSONObject op = ops.optJSONObject(i);
-                        if (op == null) return;
+            if (!opsNode.isArray()) return;
+            ArrayNode opsArray = (ArrayNode) opsNode;
 
-                        JSONObject insert = op.optJSONObject("insert");
-                        if (insert != null && insert.has("image")) {
-                            String imageUrl = insert.getString("image");
+            // Process images concurrently using CompletableFuture
+            List<CompletableFuture<Void>> processingTasks = IntStream.range(0, opsArray.size())
+                    .mapToObj(i -> {
+                        JsonNode opNode = opsArray.get(i);
+                        JsonNode insertNode = opNode.path("insert");
 
-                            if (imageUrl.startsWith("http")) {
-                                imageUrl = convertExternalImageToBase64(imageUrl);
-                            }
+                        if (insertNode.isObject() && insertNode.has("image")) {
+                            String originalImageUrl = insertNode.get("image").asText();
 
-                            if (imageUrl != null && imageUrl.startsWith("data:image") && !imageUrl.contains("webp")) {
-                                String webpImage = convertToWebP(imageUrl);
-                                // JSONObject is thread-safe, so this is fine
-                                insert.put("image", webpImage);
-                            }
+                            return CompletableFuture.supplyAsync(() -> processSingleImage(originalImageUrl))
+                                    .thenAccept(processedImage -> {
+                                        if (processedImage != null && !processedImage.equals(originalImageUrl)) {
+                                            // Synchronize ONLY the mutation of the shared JSON tree
+                                            synchronized (opsArray) {
+                                                ((ObjectNode) insertNode).put("image", processedImage);
+                                            }
+                                        }
+                                    })// Add this block to isolate failures to the individual thread
+                                    .exceptionally(ex -> {
+                                        log.error("Fatal async pipeline error for image. Keeping original. Error: {}", ex.getMessage(), ex);
+                                        // Returning null resolves the future successfully, leaving the original JSON node untouched.
+                                        return null;
+                                    });
                         }
-                    });
+                        return CompletableFuture.completedFuture((Void) null);
+                    })
+                    .toList();
 
-            note.setJsonnotes(jobj.toString());
+            // Wait for all Radxa CPU cores to finish the WebP conversions
+            CompletableFuture.allOf(processingTasks.toArray(new CompletableFuture[0])).join();
+
+            note.setJsonnotes(objectMapper.writeValueAsString(rootNode));
+
         } catch (Exception e) {
-            System.err.println("Error processing note images: " + e.getMessage());
+            log.error("Failed to parse or process note JSON", e);
         }
+    }
+
+    private String processSingleImage(String imageUrl) {
+        String currentImage = imageUrl;
+
+        if (currentImage.startsWith("http")) {
+            String downloaded = downloadImageAsBase64(currentImage);
+            if (downloaded != null) {
+                currentImage = downloaded;
+            }
+        }
+
+        if (currentImage.startsWith("data:image") && !currentImage.contains("webp") && !currentImage.contains("gif")) {
+            return convertToWebP(currentImage);
+        }
+
+        return currentImage;
     }
 
     private String convertToWebP(String base64Image) {
-        String imgType = base64Image.substring(0, base64Image.indexOf(";"));
-        if (imgType.contains("gif")) {
-            return base64Image; // Don't convert GIFs
-        }
-
         try {
-            String b64 = base64Image.substring(base64Image.indexOf(",") + 1);
-            byte[] rdata = Base64.getDecoder().decode(b64);
+            int commaIndex = base64Image.indexOf(",");
+            if (commaIndex == -1) return base64Image;
 
-            ImmutableImage image = ImmutableImage.loader().fromBytes(rdata);
+            String base64Data = base64Image.substring(commaIndex + 1);
+            byte[] rawBytes = Base64.getDecoder().decode(base64Data);
+
+            // Scrimage 4.6.5 automatically handles the aarch64 native execution
+            ImmutableImage image = ImmutableImage.loader().fromBytes(rawBytes);
             byte[] webpBytes = image.bytes(WebpWriter.DEFAULT);
 
             return "data:image/webp;base64," + Base64.getEncoder().encodeToString(webpBytes);
+
         } catch (Exception e) {
-            System.err.println("Failed to convert image to WebP: " + e.getMessage());
-            return base64Image; // Return original on failure
+            log.error("Failed to convert image to WebP using Scrimage on Radxa", e);
+            return base64Image; // Failsafe fallback
         }
     }
 
-    private String convertExternalImageToBase64(String imageUrl) {
+    private String downloadImageAsBase64(String imageUrl) {
         try {
-            URL url = new URL(imageUrl);
-            URLConnection connection = url.openConnection();
-            connection.setConnectTimeout(3000);
-            connection.setReadTimeout(5000);
-            String contentType = connection.getContentType();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(imageUrl))
+                    .timeout(Duration.ofSeconds(5))
+                    .GET()
+                    .build();
 
-            try (InputStream is = connection.getInputStream()) {
-                byte[] imageBytes = is.readAllBytes();
-                return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(imageBytes);
+            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                String contentType = response.headers().firstValue("Content-Type").orElse("image/jpeg");
+                return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(response.body());
+            } else {
+                log.warn("Failed to download external image. HTTP Status: {}", response.statusCode());
+                return null;
             }
         } catch (Exception e) {
-            System.err.println("Failed to download external image: " + e.getMessage());
-            return null; // Return null on failure
+            log.error("Network error while downloading image from: {}", imageUrl, e);
+            return null;
         }
     }
 }
