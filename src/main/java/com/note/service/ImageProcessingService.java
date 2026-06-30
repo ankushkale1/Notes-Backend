@@ -34,6 +34,7 @@ public class ImageProcessingService {
     // Modern HTTP Client - Thread-safe, reuses connections, prevents hung sockets
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(3))
+            .followRedirects(HttpClient.Redirect.ALWAYS)
             .build();
 
     // Jackson is thread-safe for reading, and the standard in Spring Boot
