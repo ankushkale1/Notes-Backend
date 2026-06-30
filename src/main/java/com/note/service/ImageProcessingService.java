@@ -24,6 +24,11 @@ import java.util.stream.IntStream;
 @Service
 public class ImageProcessingService {
 
+    static {
+        // Forces in-memory processing, bypassing Radxa /tmp limits
+        javax.imageio.ImageIO.setUseCache(false);
+    }
+
     private static final Logger log = LoggerFactory.getLogger(ImageProcessingService.class);
 
     // Modern HTTP Client - Thread-safe, reuses connections, prevents hung sockets
@@ -67,7 +72,7 @@ public class ImageProcessingService {
                                                 ((ObjectNode) insertNode).put("image", processedImage);
                                             }
                                         }
-                                    })// Add this block to isolate failures to the individual thread
+                                    })
                                     .exceptionally(ex -> {
                                         log.error("Fatal async pipeline error for image. Keeping original. Error: {}", ex.getMessage(), ex);
                                         // Returning null resolves the future successfully, leaving the original JSON node untouched.
@@ -89,29 +94,54 @@ public class ImageProcessingService {
     }
 
     private String processSingleImage(String imageUrl) {
-        String currentImage = imageUrl;
+        try {
+            String currentImage = imageUrl;
 
-        if (currentImage.startsWith("http")) {
-            String downloaded = downloadImageAsBase64(currentImage);
-            if (downloaded != null) {
-                currentImage = downloaded;
+            if (currentImage.startsWith("http")) {
+                String downloaded = downloadImageAsBase64(currentImage);
+                if (downloaded != null) {
+                    currentImage = downloaded;
+                }
             }
-        }
 
-        if (currentImage.startsWith("data:image") && !currentImage.contains("webp") && !currentImage.contains("gif")) {
-            return convertToWebP(currentImage);
-        }
+            // GATING LOGIC: Explicitly skip SVG and GIF before triggering conversion
+            if (currentImage.startsWith("data:image")
+                    && !currentImage.contains("webp")
+                    && !currentImage.contains("gif")
+                    && !currentImage.contains("svg")) {
+                return convertToWebP(currentImage);
+            }
 
-        return currentImage;
+            return currentImage;
+
+        } catch (Exception e) {
+            log.error("Unexpected error in image pipeline, falling back to original image: {}", e.getMessage());
+            return imageUrl;
+        }
     }
 
     private String convertToWebP(String base64Image) {
         try {
+            // Secondary Failsafe: Do not attempt to process vector graphics or animations
+            if (base64Image.contains("image/svg") || base64Image.contains("image/gif")) {
+                return base64Image;
+            }
+
             int commaIndex = base64Image.indexOf(",");
             if (commaIndex == -1) return base64Image;
 
-            String base64Data = base64Image.substring(commaIndex + 1);
-            byte[] rawBytes = Base64.getDecoder().decode(base64Data);
+            // Aggressive Sanitization: Removes hidden newlines and fixes URL-decoded spaces back to '+'
+            String base64Data = base64Image.substring(commaIndex + 1)
+                    .replaceAll("\\s+", "")
+                    .replace(" ", "+");
+
+            // Lenient Decoding: Try standard decoder, fallback to URL-safe decoder
+            byte[] rawBytes;
+            try {
+                rawBytes = Base64.getDecoder().decode(base64Data);
+            } catch (IllegalArgumentException e) {
+                rawBytes = Base64.getUrlDecoder().decode(base64Data);
+            }
 
             // Scrimage 4.6.5 automatically handles the aarch64 native execution
             ImmutableImage image = ImmutableImage.loader().fromBytes(rawBytes);
@@ -120,7 +150,7 @@ public class ImageProcessingService {
             return "data:image/webp;base64," + Base64.getEncoder().encodeToString(webpBytes);
 
         } catch (Exception e) {
-            log.error("Failed to convert image to WebP using Scrimage on Radxa", e);
+            log.error("Failed to convert image to WebP using Scrimage on Radxa: {}", e.getMessage());
             return base64Image; // Failsafe fallback
         }
     }
