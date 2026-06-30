@@ -2,7 +2,6 @@ package com.note.service;
 
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
-import com.note.pojo.NotebookInfo;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,12 @@ public class NoteService {
     NotebookRepository notebook_repo;
 
     @Transactional(readOnly = true)
-    public List<NotebookInfo> listNoteBooksOnly() {
-        return notebook_repo.findNotebooksOnly();
+    public List<Notebook> listNoteBooksOnly() {
+        List<Notebook> notebooks = notebook_repo.findAllWithSubNotebooks();
+        for (Notebook notebook : notebooks) {
+            notebook.setNotes(notebook_repo.findNoteInfoByNotebookId(notebook.getNotebook_id()));
+        }
+        return notebooks;
     }
 
     @Transactional(readOnly = true)

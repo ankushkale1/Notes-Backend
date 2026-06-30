@@ -2,7 +2,6 @@ package com.note.controller;
 
 import com.note.pojo.Note;
 import com.note.pojo.Notebook;
-import com.note.pojo.NotebookInfo;
 import com.note.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,8 @@ public class NoteController {
     NoteService service;
 
     @GetMapping("getNoteBooks")
-    public ResponseEntity<List<NotebookInfo>> listNoteBooks() {
-        List<NotebookInfo> res = service.listNoteBooksOnly();
+    public ResponseEntity<List<Notebook>> listNoteBooks() {
+        List<Notebook> res = service.listNoteBooksOnly();
         return ResponseEntity.ok(res);
     }
 
