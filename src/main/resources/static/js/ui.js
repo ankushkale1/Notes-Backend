@@ -91,37 +91,31 @@ function imageHandler() {
     };
 }
 
+// Function to resize a base64 image
+function resizeImage(base64Str, scale) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = base64Str;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const width = img.width * scale;
+            const height = img.height * scale;
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL());
+        };
+    });
+}
+
+
 $(window).on('load', function () {
     if (typeof hljs === 'undefined') {
         console.error("[Error] Highlight.js is not loaded! Syntax highlighting will fail.");
         return;
     }
     window.hljs = hljs;
-
-    // Extend Quill's native Image blot to support 'width' formatting
-    var BaseImageFormat = Quill.import('formats/image');
-    class ImageFormat extends BaseImageFormat {
-        static formats(domNode) {
-            return domNode.getAttribute('width') || domNode.style.width;
-        }
-
-        format(name, value) {
-            if (name === 'width') {
-                if (value) {
-                    this.domNode.setAttribute('width', value);
-                    this.domNode.style.width = value;
-                } else {
-                    this.domNode.removeAttribute('width');
-                    this.domNode.style.width = '';
-                }
-            } else {
-                super.format(name, value);
-            }
-        }
-    }
-    ImageFormat.blotName = 'image';
-    ImageFormat.tagName = 'img';
-    Quill.register(ImageFormat, true);
 
     try {
         editor = new Quill('#editor', {
@@ -162,18 +156,12 @@ $(window).on('load', function () {
         editor.root.addEventListener('paste', function(e) {
             if (!mainContainer) return;
             
-            // 1. Record the exact scroll position before the paste happens
             const currentScrollTop = mainContainer.scrollTop;
-            
-            // 2. Immediately after the paste event finishes processing, restore the scroll
             setTimeout(() => {
                 if (mainContainer.scrollTop !== currentScrollTop) {
                     mainContainer.scrollTop = currentScrollTop;
                 }
             }, 0);
-            
-            // 3. Fallback: Sometimes DOM reflows take a fraction of a second longer,
-            // so we check and restore again shortly after.
             setTimeout(() => {
                 if (mainContainer.scrollTop !== currentScrollTop) {
                     mainContainer.scrollTop = currentScrollTop;
@@ -183,53 +171,67 @@ $(window).on('load', function () {
 
         // Image resizing logic
         let selectedImage = null;
+        let originalBase64 = '';
         const resizeToolbar = document.getElementById('image-resize-toolbar');
 
-        // Listen for clicks on images within the editor
         editor.root.addEventListener('click', function(e) {
             if (e.target && e.target.tagName === 'IMG') {
                 if (selectedImage) {
                     selectedImage.classList.remove('selected-image');
                 }
                 selectedImage = e.target;
+                originalBase64 = selectedImage.src; // Store original source
                 selectedImage.classList.add('selected-image');
 
-                // Position the toolbar above the image
                 const imgRect = selectedImage.getBoundingClientRect();
                 const mainRect = mainContainer.getBoundingClientRect();
                 
-                // Calculate position relative to .main container
-                const top = imgRect.top - mainRect.top + mainContainer.scrollTop - 40; // 40px above image
+                const top = imgRect.top - mainRect.top + mainContainer.scrollTop - 40;
                 const left = imgRect.left - mainRect.left + (imgRect.width / 2) - (resizeToolbar.offsetWidth / 2);
 
                 resizeToolbar.style.top = `${Math.max(10, top)}px`;
                 resizeToolbar.style.left = `${Math.max(10, left)}px`;
                 resizeToolbar.style.display = 'flex';
                 
-                // Prevent the document click listener from immediately hiding the toolbar
                 e.stopPropagation();
             }
         });
 
-        // Handle toolbar button clicks
-        resizeToolbar.addEventListener('click', function(e) {
+        resizeToolbar.addEventListener('click', async function(e) {
             if (e.target && e.target.tagName === 'BUTTON' && selectedImage) {
+                e.stopPropagation();
                 const scale = e.target.getAttribute('data-scale');
                 const blot = Quill.find(selectedImage);
+                const index = editor.getIndex(blot);
 
-                if (blot) {
-                    if (scale === '100') {
-                        blot.format('width', false); // Remove width style
-                    } else {
-                        blot.format('width', `${scale}%`);
-                    }
-                    unsaved_content = true;
+                showLoader('Resizing image...');
+
+                if (scale === '100') {
+                    // Replace current image with the original
+                    editor.deleteText(index, 1);
+                    editor.insertEmbed(index, 'image', originalBase64);
+                } else {
+                    // Resize and replace
+                    const newBase64 = await resizeImage(originalBase64, parseFloat(scale) / 100);
+                    editor.deleteText(index, 1);
+                    editor.insertEmbed(index, 'image', newBase64);
                 }
-                e.stopPropagation(); // Keep toolbar open while clicking its buttons
+                
+                // The new image is now selected, so we need to re-query it
+                setTimeout(() => {
+                    const newBlot = editor.getLeaf(index)[0];
+                    if (newBlot && newBlot.domNode.tagName === 'IMG') {
+                        if (selectedImage) selectedImage.classList.remove('selected-image');
+                        selectedImage = newBlot.domNode;
+                        selectedImage.classList.add('selected-image');
+                    }
+                    hideLoader();
+                }, 100);
+
+                unsaved_content = true;
             }
         });
 
-        // Hide toolbar when clicking elsewhere
         document.addEventListener('click', function(e) {
             if (resizeToolbar.style.display === 'flex' && !resizeToolbar.contains(e.target)) {
                 resizeToolbar.style.display = 'none';
@@ -244,6 +246,8 @@ $(window).on('load', function () {
         console.error("[Error] Failed to initialize Quill editor:", error);
     }
 });
+
+// ... rest of the file is unchanged ...
 
 // UPDATED TEMPLATE: Modern flexbox layout matching the dark mode CSS
 var menu_template = `
