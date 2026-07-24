@@ -1,14 +1,13 @@
 package com.note.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import tools.jackson.databind.annotation.JsonDeserialize;
-import tools.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -19,11 +18,12 @@ import java.util.Set;
 @Data
 public class Note {
     @Id
-    @GeneratedValue(generator = "sync-id-gen")
-    @org.hibernate.annotations.GenericGenerator(
-            name = "sync-id-gen",
-            type = com.note.config.SyncIdGenerator.class
-    )
+//    @GeneratedValue(generator = "sync-id-gen")
+//    @org.hibernate.annotations.GenericGenerator(
+//            name = "sync-id-gen",
+//            type = com.note.config.SyncIdGenerator.class
+//    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int note_id;
 
     @NotBlank

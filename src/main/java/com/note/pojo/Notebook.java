@@ -2,7 +2,6 @@ package com.note.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.note.config.SyncIdGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -18,11 +17,12 @@ import java.util.List;
 @Data
 public class Notebook {
     @Id
-    @GeneratedValue(generator = "sync-id-gen")
-    @org.hibernate.annotations.GenericGenerator(
-            name = "sync-id-gen",
-            type = com.note.config.SyncIdGenerator.class
-    )
+//    @GeneratedValue(generator = "sync-id-gen")
+//    @org.hibernate.annotations.GenericGenerator(
+//            name = "sync-id-gen",
+//            type = com.note.config.SyncIdGenerator.class
+//    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer notebook_id;
 
     @NotBlank

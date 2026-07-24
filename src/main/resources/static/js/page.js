@@ -215,7 +215,7 @@ function addUpdateNote(notename, notebook) {
         checkUnsavedThings();
 
         note = {
-            "note_id": null,
+            // "note_id": null, // Removed this line
             "notename": notename,
             "jsonnotes": "Hello World",
             "keywords": ['Test'],
