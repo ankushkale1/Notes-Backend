@@ -37,6 +37,6 @@ exec java --enable-preview \
     -Dspring.main.lazy-initialization=true \
     -Dspring.jmx.enabled=false \
     -Dspring.threads.virtual.enabled=true \
-    -jar /home/ankush/NotesApp-BackEnd/target/NotesApp-0.0.1.jar
+    -jar /home/ankush/NotesApp/backend/target/NotesApp-0.0.1.jar
 
 echo "NoteBook App starting on port 8999..."
