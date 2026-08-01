@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notebook App</title>
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
     <link href="css/noty.css" rel="stylesheet">
     <link href="css/topnav.css" rel="stylesheet">
@@ -19,23 +20,23 @@
     <style>
         /* IntelliJ IDEA Darcula & New UI Dark Theme - Low Contrast, Soft Grays & Classic IDE Blue */
         :root {
-            --bg-main: #1e1f22;        /* IntelliJ editor background */
-            --bg-surface: #2b2d30;     /* IntelliJ panels/navbar/toolbar */
-            --bg-hover: #2e3238;       /* Subtle tree hover */
-            --bg-active: #2c3b59;      /* IntelliJ soft blue selection */
-            --border-color: #393b40;   /* Muted structural borders */
-            --border-focus: #3d7a99;   /* IntelliJ blue focus ring */
-            --text-main: #bcbec4;      /* Standard reading text (low eye strain) */
-            --text-muted: #6f737a;     /* Comments / inactive icons */
-            --text-active: #ffffff;    /* Selected item text */
-            --accent: #548af7;         /* IntelliJ blue highlight */
+            --bg-main: #1e1f22; /* IntelliJ editor background */
+            --bg-surface: #2b2d30; /* IntelliJ panels/navbar/toolbar */
+            --bg-hover: #2e3238; /* Subtle tree hover */
+            --bg-active: #2c3b59; /* IntelliJ soft blue selection */
+            --border-color: #393b40; /* Muted structural borders */
+            --border-focus: #3d7a99; /* IntelliJ blue focus ring */
+            --text-main: #bcbec4; /* Standard reading text (low eye strain) */
+            --text-muted: #6f737a; /* Comments / inactive icons */
+            --text-active: #ffffff; /* Selected item text */
+            --accent: #548af7; /* IntelliJ blue highlight */
 
             /* Classic IntelliJ (Darcula) Button Blue */
             --btn-primary: #000000;
             --btn-hover: #ffffff;
             --btn-border: #343434;
 
-            --delete-hover: #ff5261;   /* Soft red for destructives */
+            --delete-hover: #ff5261; /* Soft red for destructives */
         }
 
         body, html {
@@ -50,7 +51,10 @@
         /* --- Global Loader Overlay --- */
         #app-loader {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(30, 31, 34, 0.85); /* Matches IntelliJ bg */
             z-index: 9999;
             display: none;
@@ -58,14 +62,22 @@
             align-items: center;
             color: var(--text-main);
         }
-        .loader-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
 
         /* --- Top Navbar --- */
         .navbar-primary {
             background-color: var(--bg-surface) !important;
             border-bottom: 1px solid var(--border-color) !important;
             position: fixed !important;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             z-index: 1050 !important;
             margin: 0 !important;
             width: 100%;
@@ -74,52 +86,98 @@
             display: flex;
             align-items: center;
         }
+
         .navbar-primary .container-fluid {
-            display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 20px;
         }
 
         .navbar-left-section {
-            display: flex; align-items: center; gap: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; margin: 0; padding: 0; list-style: none; height: 100%; }
-        .navbar-nav > li { margin-left: 5px; display: flex; align-items: center; position: relative; }
+        .navbar-nav {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            height: 100%;
+        }
+
+        .navbar-nav > li {
+            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
         .navbar-inverse .navbar-nav > li > a {
             color: var(--text-main) !important;
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.2s ease;
-            border-radius: 6px; padding: 8px 12px !important;
-            text-decoration: none; cursor: pointer;
+            border-radius: 6px;
+            padding: 8px 12px !important;
+            text-decoration: none;
+            cursor: pointer;
         }
+
         .navbar-inverse .navbar-nav > li > a:hover {
-            color: var(--text-active) !important; background-color: var(--bg-hover) !important;
+            color: var(--text-active) !important;
+            background-color: var(--bg-hover) !important;
         }
 
         /* --- Top Navbar Hamburger Toggle --- */
         #topbarToggle {
-            background: transparent !important; border: none !important; color: var(--text-main) !important;
-            padding: 8px !important; margin: 0; border-radius: 4px; transition: all 0.2s; cursor: pointer;
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-main) !important;
+            padding: 8px !important;
+            margin: 0;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
             display: flex;
-            align-items: center; justify-content: center;
+            align-items: center;
+            justify-content: center;
         }
-        #topbarToggle:hover { color: var(--text-active) !important; background-color: var(--bg-hover) !important; }
+
+        #topbarToggle:hover {
+            color: var(--text-active) !important;
+            background-color: var(--bg-hover) !important;
+        }
 
         /* Breadcrumb Alignment */
         .breadcrumb-nav {
-            display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* --- Modern Sidebar Architecture --- */
         .modern-sidebar {
             position: fixed;
-            top: 50px; left: 0;
+            top: 50px;
+            left: 0;
             width: 260px;
             height: calc(100vh - 50px);
             background-color: var(--bg-surface);
             border-right: 1px solid var(--border-color);
-            overflow-y: auto; z-index: 1040;
-            display: flex; flex-direction: column;
+            overflow-y: auto;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -129,56 +187,131 @@
         }
 
         .sidebar-header {
-            padding: 15px 20px; font-size: 13px; font-weight: 600;
-            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            padding: 15px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
         }
 
-        .sidebar-menu { flex-grow: 1; padding: 10px 0; }
-        .sidebar-menu ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu {
+            flex-grow: 1;
+            padding: 10px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
         /* Level 1 Category (IntelliJ Style Selection) */
         .folder-item > a {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 20px; color: var(--text-main) !important;
-            text-decoration: none !important; font-size: 14px;
-            transition: all 0.1s ease; cursor: pointer;
-            margin: 2px 10px; border-radius: 4px; /* IntelliJ rounded selection rows */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            color: var(--text-main) !important;
+            text-decoration: none !important;
+            font-size: 14px;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            margin: 2px 10px;
+            border-radius: 4px; /* IntelliJ rounded selection rows */
         }
+
         .folder-item:hover > a {
-            background-color: var(--bg-hover); color: var(--text-active) !important;
+            background-color: var(--bg-hover);
+            color: var(--text-active) !important;
         }
+
         .folder-item.active > a {
-            background-color: var(--bg-active); color: var(--text-active) !important;
+            background-color: var(--bg-active);
+            color: var(--text-active) !important;
         }
-        .folder-item > a .menu-item-content { display: flex; align-items: center; gap: 10px; }
-        .folder-item > a i.fa-folder-open { color: var(--text-muted); font-size: 14px; width: 16px; text-align: center; }
-        .folder-item.active > a i.fa-folder-open { color: var(--text-active); }
+
+        .folder-item > a .menu-item-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folder-item > a i.fa-folder-open {
+            color: var(--text-muted);
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .folder-item.active > a i.fa-folder-open {
+            color: var(--text-active);
+        }
 
         /* Level 2 Nodes */
-        .sub-menu { background-color: var(--bg-surface); padding-bottom: 5px; }
-        .sub-menu li > a {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 6px 20px 6px 42px; color: var(--text-main) !important;
-            text-decoration: none !important; font-size: 13px;
-            transition: all 0.1s ease; cursor: pointer;
-            margin: 0px 10px; border-radius: 4px;
+        .sub-menu {
+            background-color: var(--bg-surface);
+            padding-bottom: 5px;
         }
-        .sub-menu li > a .menu-item-content { display: flex; align-items: center; gap: 10px; }
-        .sub-menu li > a i.fa-file-lines { color: var(--text-muted); width: 14px; text-align: center; }
+
+        .sub-menu li > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 20px 6px 42px;
+            color: var(--text-main) !important;
+            text-decoration: none !important;
+            font-size: 13px;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            margin: 0px 10px;
+            border-radius: 4px;
+        }
+
+        .sub-menu li > a .menu-item-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sub-menu li > a i.fa-file-lines {
+            color: var(--text-muted);
+            width: 14px;
+            text-align: center;
+        }
 
         .sub-menu li:hover > a {
-            background-color: var(--bg-hover); color: var(--text-active) !important;
+            background-color: var(--bg-hover);
+            color: var(--text-active) !important;
         }
-        .sub-menu li.active > a {
-            background-color: var(--bg-active); color: var(--text-active) !important;
-        }
-        .sub-menu li.active > a i.fa-file-lines { color: var(--text-active); }
 
-        .fa-trash { transition: color 0.2s ease; font-size: 13px; color: var(--text-muted); }
-        .fa-trash:hover { color: var(--delete-hover) !important; }
-        .active > a .fa-trash { color: rgba(255,255,255,0.7); }
+        .sub-menu li.active > a {
+            background-color: var(--bg-active);
+            color: var(--text-active) !important;
+        }
+
+        .sub-menu li.active > a i.fa-file-lines {
+            color: var(--text-active);
+        }
+
+        .fa-trash {
+            transition: color 0.2s ease;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .fa-trash:hover {
+            color: var(--delete-hover) !important;
+        }
+
+        .active > a .fa-trash {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
         /* --- Main Content Area --- */
         .main {
@@ -200,17 +333,31 @@
         /* --- Modals & Popups --- */
         .white-popup {
             background: var(--bg-surface) !important;
-            padding: 30px; border-radius: 8px; max-width: 400px; margin: 0 auto;
-            color: var(--text-main) !important; border: 1px solid var(--border-color) !important;
-        }
-        .white-popup h4 { color: var(--text-active); }
-        .white-popup input[type="text"], .white-popup select {
-            background-color: var(--bg-main) !important; color: var(--text-active) !important;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+            color: var(--text-main) !important;
             border: 1px solid var(--border-color) !important;
-            width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 4px;
         }
+
+        .white-popup h4 {
+            color: var(--text-active);
+        }
+
+        .white-popup input[type="text"], .white-popup select {
+            background-color: var(--bg-main) !important;
+            color: var(--text-active) !important;
+            border: 1px solid var(--border-color) !important;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
         .white-popup input[type="text"]:focus, .white-popup select:focus {
-            border-color: var(--border-focus) !important; outline: none;
+            border-color: var(--border-focus) !important;
+            outline: none;
         }
 
         /* --- Buttons --- */
@@ -229,6 +376,7 @@
             gap: 8px;
             margin: 2px;
         }
+
         button:hover {
             background-color: var(--btn-hover) !important;
             border-color: var(--btn-hover) !important;
@@ -248,25 +396,64 @@
 
         /* --- Quill Editor UI --- */
         #editor {
-            background-color: var(--bg-main) !important; color: var(--text-main) !important;
-            border: 1px solid var(--border-color) !important; border-top: none !important;
-            border-radius: 0 0 8px 8px; min-height: calc(100vh - 120px); font-size: 15px;
+            background-color: var(--bg-main) !important;
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-color) !important;
+            border-top: none !important;
+            border-radius: 0 0 8px 8px;
+            min-height: calc(100vh - 120px);
+            font-size: 15px;
         }
+
         .ql-toolbar.ql-snow {
-            background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important;
-            border-radius: 8px 8px 0 0; position: sticky; top: 0; z-index: 1000; padding: 10px !important;
+            background-color: var(--bg-surface) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px 8px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 10px !important;
         }
-        .ql-snow .ql-stroke { stroke: var(--text-muted) !important; }
-        .ql-snow .ql-fill { fill: var(--text-muted) !important; }
-        .ql-snow .ql-picker { color: var(--text-main) !important; font-weight: 500; }
 
-        button.ql-active .ql-stroke, .ql-snow .ql-picker-label:hover .ql-stroke, .ql-snow .ql-picker-item:hover .ql-stroke { stroke: var(--text-active) !important; }
-        button.ql-active .ql-fill, .ql-snow .ql-picker-label:hover .ql-fill, .ql-snow .ql-picker-item:hover .ql-fill { fill: var(--text-active) !important; }
-        .ql-snow .ql-picker-options { background-color: var(--bg-surface) !important; border-color: var(--border-color) !important; }
+        .ql-snow .ql-stroke {
+            stroke: var(--text-muted) !important;
+        }
 
-        .dropdown-menu { background-color: var(--bg-surface) !important; border: 1px solid var(--border-color) !important; }
-        .dropdown-menu > li > a { color: var(--text-main) !important; }
-        .dropdown-menu > li > a:hover { background-color: var(--bg-active) !important; color: var(--text-active) !important; }
+        .ql-snow .ql-fill {
+            fill: var(--text-muted) !important;
+        }
+
+        .ql-snow .ql-picker {
+            color: var(--text-main) !important;
+            font-weight: 500;
+        }
+
+        button.ql-active .ql-stroke, .ql-snow .ql-picker-label:hover .ql-stroke, .ql-snow .ql-picker-item:hover .ql-stroke {
+            stroke: var(--text-active) !important;
+        }
+
+        button.ql-active .ql-fill, .ql-snow .ql-picker-label:hover .ql-fill, .ql-snow .ql-picker-item:hover .ql-fill {
+            fill: var(--text-active) !important;
+        }
+
+        .ql-snow .ql-picker-options {
+            background-color: var(--bg-surface) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        .dropdown-menu {
+            background-color: var(--bg-surface) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .dropdown-menu > li > a {
+            color: var(--text-main) !important;
+        }
+
+        .dropdown-menu > li > a:hover {
+            background-color: var(--bg-active) !important;
+            color: var(--text-active) !important;
+        }
 
         /* --- Image Resize Toolbar --- */
         #image-resize-toolbar {
@@ -277,9 +464,10 @@
             border-radius: 4px;
             padding: 4px;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             gap: 4px;
         }
+
         #image-resize-toolbar button {
             margin: 0;
             padding: 4px 8px;
@@ -288,6 +476,7 @@
             border-color: var(--border-color) !important;
             color: var(--text-main) !important;
         }
+
         #image-resize-toolbar button:hover {
             background-color: var(--bg-hover) !important;
             color: var(--text-active) !important;
@@ -329,7 +518,8 @@
 </div>
 
 <nav class="navbar navbar-inverse navbar-primary">
-    <button type="button" id="topbarToggle" title="Toggle Sidebar" onclick="document.body.classList.toggle('sidebar-collapsed')">
+    <button type="button" id="topbarToggle" title="Toggle Sidebar"
+            onclick="document.body.classList.toggle('sidebar-collapsed')">
         <i class="fa fa-bars fa-lg"></i>
     </button>
     <div class="container-fluid">
@@ -342,12 +532,19 @@
         </div>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a aria-label="Refresh" data-balloon-pos="down" onclick="getNoteBookMeta()" role="button"><i class="fa fa-refresh"></i> <span class="hidden-xs">Refresh</span></a></li>
-            <li><a aria-label="New Note" data-balloon-pos="down" href="#NewNote" class="mypopup" role="button"><i class="fa fa-file-circle-plus"></i> <span class="hidden-xs">New Note</span></a></li>
-            <li><a aria-label="New Notebook" data-balloon-pos="down" href="#NewBook" class="mypopup" role="button"><i class="fa fa-folder-plus"></i> <span class="hidden-xs">New Notebook</span></a></li>
-            <li><a aria-label="Save" data-balloon-pos="down" onclick="addUpdateNote()" role="button"><i class="fa fa-save"></i> <span class="hidden-xs">Save</span></a></li>
-            <li><a aria-label="Export to Markdown" data-balloon-pos="down" onclick="exportToMarkdown()" role="button"><i class="fa-solid fa-file-export"></i> <span class="hidden-xs">Export</span></a></li>
-            <li><a aria-label="Search" data-balloon-pos="down" href="#search" onclick="clearPrevSearch()" class="mypopup" role="button"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></a></li>
+            <li><a aria-label="Refresh" data-balloon-pos="down" onclick="getNoteBookMeta()" role="button"><i
+                    class="fa fa-refresh"></i> <span class="hidden-xs">Refresh</span></a></li>
+            <li><a aria-label="New Note" data-balloon-pos="down" href="#NewNote" class="mypopup" role="button"><i
+                    class="fa fa-file-circle-plus"></i> <span class="hidden-xs">New Note</span></a></li>
+            <li><a aria-label="New Notebook" data-balloon-pos="down" href="#NewBook" class="mypopup" role="button"><i
+                    class="fa fa-folder-plus"></i> <span class="hidden-xs">New Notebook</span></a></li>
+            <li><a aria-label="Save" data-balloon-pos="down" onclick="addUpdateNote()" role="button"><i
+                    class="fa fa-save"></i> <span class="hidden-xs">Save</span></a></li>
+            <li><a aria-label="Export to Markdown" data-balloon-pos="down" onclick="exportToMarkdown()" role="button"><i
+                    class="fa-solid fa-file-export"></i> <span class="hidden-xs">Export</span></a></li>
+            <li><a aria-label="Search" data-balloon-pos="down" href="#search" onclick="clearPrevSearch()"
+                   class="mypopup" role="button"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -368,7 +565,9 @@
         <h4 style="margin-top: 0; margin-bottom: 20px;">Create Notebook</h4>
         <input type="text" name="book" placeholder="Notebook Name"/>
         <select class="mynotebooks"></select>
-        <button onclick="addNotebook($('[name=\'book\']').val(),$('#NewBook .mynotebooks').find(':selected').val())" style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create</button>
+        <button onclick="addNotebook($('[name=\'book\']').val(),$('#NewBook .mynotebooks').find(':selected').val())"
+                style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create
+        </button>
     </div>
 
     <div id="search" class="white-popup mfp-hide">
@@ -381,7 +580,9 @@
         <h4 style="margin-top: 0; margin-bottom: 20px;">Create Note</h4>
         <input type="text" name="note" placeholder="Note Name"/>
         <select class="mynotebooks"></select>
-        <button onclick="addUpdateNote($('[name=\'note\']').val(),$('#NewNote .mynotebooks').find(':selected').val())" style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create</button>
+        <button onclick="addUpdateNote($('[name=\'note\']').val(),$('#NewNote .mynotebooks').find(':selected').val())"
+                style="width: 100%; justify-content: center;"><i class="fa fa-plus"></i> Create
+        </button>
     </div>
 </div>
 

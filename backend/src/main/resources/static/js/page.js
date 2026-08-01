@@ -64,6 +64,7 @@ function getNote(noteid) {
             //editor.container.firstChild.innerHTML = res.jsonnotes;
 
             $('#notename').text(res.notename);
+            document.title = "Note - " + res.notename;
             current_note = res;
             current_notebook = notebook_meta_map.get(res.notebook_id);
             $('#currentNotebook').text(current_notebook.notebookname);
@@ -74,7 +75,7 @@ function getNote(noteid) {
             showNotification('Error while fetching Note..', NOTIFICATION_TYPE.ERROR);
             console.info(res + " " + statuscode);
         },
-        complete: function() {
+        complete: function () {
             hideLoader();
         }
     });
@@ -124,7 +125,7 @@ function getNoteBookMeta() {
             console.info(res + " " + statuscode);
             showNotification('Error while fetching Notebooks..', NOTIFICATION_TYPE.ERROR);
         },
-        complete: function() {
+        complete: function () {
             // ALWAYS hides the loader, even on error
             hideLoader();
         }
@@ -207,7 +208,7 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while updating a note', NOTIFICATION_TYPE.ERROR);
             },
-            complete: function() {
+            complete: function () {
                 hideLoader();
             }
         });
@@ -245,7 +246,7 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while adding Note', NOTIFICATION_TYPE.ERROR);
             },
-            complete: function() {
+            complete: function () {
                 hideLoader();
             }
         });
