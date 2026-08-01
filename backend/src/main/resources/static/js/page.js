@@ -1,5 +1,10 @@
 function pageInit() {
     getNoteBookMeta();
+    const urlParams = new URLSearchParams(window.location.search);
+    const noteId = urlParams.get('noteId');
+    if (noteId) {
+        getNote(noteId);
+    }
 }
 
 var current_notebook = null;
@@ -75,7 +80,7 @@ function getNote(noteid) {
             showNotification('Error while fetching Note..', NOTIFICATION_TYPE.ERROR);
             console.info(res + " " + statuscode);
         },
-        complete: function () {
+        complete: function() {
             hideLoader();
         }
     });
@@ -125,7 +130,7 @@ function getNoteBookMeta() {
             console.info(res + " " + statuscode);
             showNotification('Error while fetching Notebooks..', NOTIFICATION_TYPE.ERROR);
         },
-        complete: function () {
+        complete: function() {
             // ALWAYS hides the loader, even on error
             hideLoader();
         }
@@ -208,7 +213,7 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while updating a note', NOTIFICATION_TYPE.ERROR);
             },
-            complete: function () {
+            complete: function() {
                 hideLoader();
             }
         });
@@ -246,7 +251,7 @@ function addUpdateNote(notename, notebook) {
                 console.info(res + " " + statuscode);
                 showNotification('Error while adding Note', NOTIFICATION_TYPE.ERROR);
             },
-            complete: function () {
+            complete: function() {
                 hideLoader();
             }
         });

@@ -267,7 +267,7 @@ var menu_template = `
 
 // UPDATED TEMPLATE: Note child items with modern flexbox
 var menu_item_template = `
-    <li onclick="$('.sub-menu li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
+    <li oncontextmenu="window.open('index.html?noteId={note_id}','_blank'); return false;" onclick="$('.sub-menu li').removeClass('active'); $(this).addClass('active'); getNote({note_id});">
         <a id="n_{note_id}">
             <div class="menu-item-content">
                 <i class="fa fa-file-lines"></i>
