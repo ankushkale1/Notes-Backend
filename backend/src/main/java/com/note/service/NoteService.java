@@ -50,7 +50,15 @@ public class NoteService {
         return note;
     }
 
+    @Transactional
     public Note addUpdateNote(Note note) {
+        // Ensure the notebook relationship is correctly managed
+        if (note.getNotebook() == null && note.getNotebook_id() != null) {
+            Notebook notebook = notebook_repo.findById(note.getNotebook_id())
+                    .orElseThrow(() -> new ResourceNotFoundException("Notebook not found with id: " + note.getNotebook_id()));
+            note.setNotebook(notebook);
+        }
+
         imageProcessingService.processNoteImages(note);
         Note res = note_repo.save(note);
         res.setNotebook_id(res.getNotebook().getNotebook_id());
