@@ -37,3 +37,6 @@ cwebp_tmp/
 JSON_NOTES/
 libs/
 lucene/
+
+mysql-data/
+*.sql
