@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
 @Service
 public class NoteService {
@@ -45,7 +45,7 @@ public class NoteService {
     public Note getNoteDetails(Integer note_id) {
         Note note = note_repo.findById(note_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Note not found with id: " + note_id));
-        
+
         note.setNotebook_id(note.getNotebook().getNotebook_id());
         return note;
     }
@@ -69,21 +69,15 @@ public class NoteService {
         //backupService.saveNote(note);
     }
 
-    public Notebook addNotebook(Notebook note) {
-        Notebook res = null;
-        if (note.getParent() != null) //i.e parent passed
-        {
-            res = notebook_repo.findById(note.getParent().getNotebook_id())
-                    .map(parent -> {
-                        note.setParent(parent);
-                        return notebook_repo.save(note);
-                    })
-                    .orElseThrow(() -> new ResourceNotFoundException("Parent notebook not found with id: " + note.getParent().getNotebook_id()));
+    @Transactional
+    public Notebook addNotebook(Notebook notebook) {
+        if (notebook.getParent() != null && notebook.getParent().getNotebook_id() != null) {
+            Notebook parentNotebook = notebook_repo.getReferenceById(notebook.getParent().getNotebook_id());
+            notebook.setParent(parentNotebook);
         } else {
-            res = notebook_repo.save(note);
+            notebook.setParent(null);
         }
-        //saveNotebookToBackup(res);
-        return res;
+        return notebook_repo.save(notebook);
     }
 
     public void saveNotebookToBackup(Notebook notebook) {

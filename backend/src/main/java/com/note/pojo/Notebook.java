@@ -21,7 +21,7 @@ import java.util.List;
 )
 public class Notebook {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer notebook_id;
 
     @NotBlank

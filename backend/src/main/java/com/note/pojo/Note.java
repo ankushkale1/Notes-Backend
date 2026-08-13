@@ -21,7 +21,7 @@ import java.util.Set;
 )
 public class Note {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int note_id;
 
     @NotBlank
