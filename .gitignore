@@ -38,5 +38,8 @@ JSON_NOTES/
 libs/
 lucene/
 
+#dont touch mysql files
 mysql-data/
+mysql-data-backup/
 *.sql
+*.ibd
