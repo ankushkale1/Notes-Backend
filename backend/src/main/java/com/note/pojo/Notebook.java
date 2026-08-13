@@ -15,13 +15,12 @@ import java.util.List;
 
 @Entity
 @Data
+@NamedEntityGraph(
+    name = "Notebook.withSubNotebooks",
+    attributeNodes = @NamedAttributeNode("sub_notebooks")
+)
 public class Notebook {
     @Id
-//    @GeneratedValue(generator = "sync-id-gen")
-//    @org.hibernate.annotations.GenericGenerator(
-//            name = "sync-id-gen",
-//            type = com.note.config.SyncIdGenerator.class
-//    )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer notebook_id;
 
@@ -39,13 +38,13 @@ public class Notebook {
     private List<NoteInfo> notes;
 
     @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_notebook_id")
     @JsonBackReference
     Notebook parent = null;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     List<Notebook> sub_notebooks;
 
     public Notebook() {

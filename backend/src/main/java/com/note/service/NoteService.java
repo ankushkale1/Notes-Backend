@@ -2,6 +2,7 @@ package com.note.service;
 
 import com.note.exception.ResourceNotFoundException;
 import com.note.pojo.Note;
+import com.note.pojo.NoteInfo;
 import com.note.pojo.Notebook;
 import com.note.repo.NoteRepository;
 import com.note.repo.NotebookRepository;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Collections;
 
 @Service
@@ -26,9 +29,14 @@ public class NoteService {
 
     @Transactional(readOnly = true)
     public List<Notebook> listNoteBooksOnly() {
-        List<Notebook> notebooks = notebook_repo.findAllWithSubNotebooks();
+        List<Notebook> notebooks = notebook_repo.findAll();
+        List<NoteInfo> allNotes = notebook_repo.findAllNoteInfo();
+
+        Map<Integer, List<NoteInfo>> notesByNotebook = allNotes.stream()
+                .collect(Collectors.groupingBy(NoteInfo::getNotebook_id));
+
         for (Notebook notebook : notebooks) {
-            notebook.setNotes(notebook_repo.findNoteInfoByNotebookId(notebook.getNotebook_id()));
+            notebook.setNotes(notesByNotebook.get(notebook.getNotebook_id()));
         }
         return notebooks;
     }
@@ -38,8 +46,7 @@ public class NoteService {
         Note note = note_repo.findById(note_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Note not found with id: " + note_id));
         
-        Notebook book = note.getNotebook();
-        note.setNotebook_id(book.getNotebook_id());
+        note.setNotebook_id(note.getNotebook().getNotebook_id());
         return note;
     }
 

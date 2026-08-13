@@ -14,20 +14,17 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-//@Indexed
 @Data
+@NamedEntityGraph(
+    name = "Note.withNotebook",
+    attributeNodes = @NamedAttributeNode("notebook")
+)
 public class Note {
     @Id
-//    @GeneratedValue(generator = "sync-id-gen")
-//    @org.hibernate.annotations.GenericGenerator(
-//            name = "sync-id-gen",
-//            type = com.note.config.SyncIdGenerator.class
-//    )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int note_id;
 
     @NotBlank
-//    @Field
     @Basic
     String notename;
 
@@ -45,24 +42,20 @@ public class Note {
     @Basic
     Timestamp udate;
 
-    //@NotEmpty
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     Set<String> keywords;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "notebook_id", nullable = false)
     @JsonBackReference
     Notebook notebook;
 
     @Transient
-    //as above thing skips notebook object
     @JsonSerialize
     @JsonDeserialize
     Integer notebook_id;
 
-    //@NotEmpty
-//    @Field
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "LONGTEXT")
     String plain_content;
 
